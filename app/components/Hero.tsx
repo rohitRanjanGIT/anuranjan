@@ -1,3 +1,8 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { fadeUp } from "@/lib/animations";
+
 interface HeroProps {
     title: string;
     subtitle?: string;
@@ -20,9 +25,9 @@ export default function Hero({
     secondaryButtonText
 }: HeroProps) {
     return (
-        <section className={`relative ${large ? "h-[90vh]" : "h-[500px]"} flex items-center overflow-hidden bg-slate-900`}>
+        <section className={`relative ${large ? "h-[90vh]" : "h-[500px]"} flex items-center overflow-hidden bg-secondary`}>
             <div className="absolute inset-0 z-0 overflow-hidden">
-                <div className={`absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-900/40 to-slate-950/80 z-10`}></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/40 to-secondary/80 z-10"></div>
                 <img
                     alt={title}
                     className="w-full h-full object-cover scale-105 animate-subtle-zoom opacity-80"
@@ -32,34 +37,66 @@ export default function Hero({
             <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-white w-full">
                 <div className={`${large ? "max-w-3xl" : "max-w-2xl"} space-y-8`}>
                     {subtitle && (
-                        <div className="inline-block">
-                            <h2 className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-2 flex items-center gap-3">
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            animate="visible"
+                            className="inline-block"
+                        >
+                            <h2 className="eyebrow text-primary mb-2 flex items-center gap-3">
                                 <span className="w-8 h-[1px] bg-primary"></span>
                                 {subtitle}
                             </h2>
-                        </div>
+                        </motion.div>
                     )}
-                    <h1 className={`${large ? "text-6xl md:text-8xl" : "text-5xl md:text-6xl"} font-extrabold leading-[1.05] tracking-tight`}>
+                    <motion.h1
+                        variants={fadeUp}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.1 }}
+                        className={`${large ? "text-6xl md:text-8xl" : "text-5xl md:text-6xl"} font-extrabold leading-[1.05] tracking-tight text-white`}
+                    >
                         {title} {highlightedText && <><br /><span className="text-primary font-light italic">{highlightedText}</span></>}
-                    </h1>
-                    <div className="h-1 w-20 bg-primary"></div>
-                    <p className={`${large ? "text-xl md:text-2xl" : "text-lg md:text-xl"} text-slate-200 font-light leading-relaxed max-w-xl`}>
+                    </motion.h1>
+
+                    <motion.div
+                        variants={fadeUp}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.2 }}
+                        className="h-1 w-20 bg-primary"
+                    ></motion.div>
+
+                    <motion.p
+                        variants={fadeUp}
+                        initial="hidden"
+                        animate="visible"
+                        transition={{ delay: 0.3 }}
+                        className={`${large ? "text-xl md:text-2xl" : "text-lg md:text-xl"} text-white/80 font-light leading-relaxed max-w-xl`}
+                    >
                         {description}
-                    </p>
+                    </motion.p>
+
                     {(primaryButtonText || secondaryButtonText) && (
-                        <div className="flex flex-wrap gap-5 pt-4">
+                        <motion.div
+                            variants={fadeUp}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ delay: 0.4 }}
+                            className="flex flex-wrap gap-5 pt-4"
+                        >
                             {primaryButtonText && (
-                                <button className="bg-primary hover:bg-white hover:text-secondary text-white px-10 py-5 rounded-full font-bold text-base transition-all duration-500 shadow-xl flex items-center gap-3">
+                                <button className="bg-primary hover:bg-white hover:text-secondary text-white px-10 py-4 md:py-5 rounded-full font-bold text-base transition-all duration-300 shadow-xl flex items-center gap-3 active:scale-95">
                                     {primaryButtonText}
                                     <span className="material-symbols-outlined text-sm">north_east</span>
                                 </button>
                             )}
                             {secondaryButtonText && (
-                                <button className="bg-transparent hover:bg-white/10 text-white border border-white/30 px-10 py-5 rounded-full font-bold text-base transition-all duration-500 backdrop-blur-sm">
+                                <button className="bg-transparent hover:bg-white/10 text-white border border-white/30 px-10 py-4 md:py-5 rounded-full font-bold text-base transition-all duration-300 backdrop-blur-sm active:scale-95">
                                     {secondaryButtonText}
                                 </button>
                             )}
-                        </div>
+                        </motion.div>
                     )}
                 </div>
             </div>

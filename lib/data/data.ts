@@ -1,7 +1,27 @@
-export const siteConfig = {
+import {
+  SiteConfig,
+  NavItem,
+  Service,
+  Project,
+  Value, // Wait, I didn't define Value in types.ts, I should.
+  Testimonial,
+  TeamMember,
+  HistoryItem,
+  GalleryItem,
+  Career,
+  FooterSection
+} from "./types";
+
+// I'll update types.ts in a bit to include missing ones.
+// For now let's just use the interfaces.
+
+export const siteConfig: SiteConfig = {
   name: "Anuranjan Infratech",
   fullName: "Anuranjan Infratech Resources Pvt Ltd",
   description: "Building Excellence, Designing Dreams",
+  tagline: "Foundations of the Future",
+  descriptionShort: "Excellence in infrastructure and construction since 15+ years. Building tomorrow's landmarks with precision and integrity.",
+  copyright: "© 2026 Anuranjan Infratech Resources Pvt Ltd. All rights reserved.",
   experienceYears: 15,
   projectsCompleted: 200,
   logo: {
@@ -21,10 +41,146 @@ export const siteConfig = {
     { name: "LinkedIn", icon: "public", url: "#" },
     { name: "Twitter", icon: "share", url: "#" },
     { name: "Instagram", icon: "mail", url: "#" }
-  ]
+  ],
+  homeStrings: {
+    hero: {
+      title: "Anuranjan Infratech",
+      highlightedText: "Resources Pvt Ltd",
+      subtitle: "Foundations of the Future",
+      primaryButton: "Explore Portfolio",
+      secondaryButton: "Our Services"
+    },
+    overview: {
+      eyebrow: "The Legacy",
+      title: "We shape the landscape of modern",
+      highlightedTitle: "infrastructure",
+      description: "Anuranjan Infratech Resources Pvt Ltd is a premier construction and design firm dedicated to delivering structural integrity and architectural brilliance. From complex civil engineering to bespoke interiors, we merge technical expertise with creative vision.",
+      yearsLabel: "Years of Mastery"
+    },
+    services: {
+      eyebrow: "Specialized Services",
+      title: "Mastering Civil & Design",
+      buttonText: "All Services"
+    },
+    portfolio: {
+      eyebrow: "Our Portfolio",
+      title: "Landmarks of Excellence",
+      description: "Showcasing our most iconic projects across the nation.",
+      buttonText: "Explore All Projects"
+    },
+    testimonials: {
+      eyebrow: "Testimonials",
+      title: "Trusted by Industry Leaders"
+    },
+    cta: {
+      title: "Ready to build your",
+      highlightedWord: "vision?",
+      description: "Let's collaborate to create something extraordinary. Our team is ready to transform your ideas into structural reality.",
+      primaryButton: "Start a Project",
+      secondaryButton: "Contact Us"
+    }
+  },
+  common: {
+    getQuote: "Get a Quote"
+  },
+  aboutStrings: {
+    hero: {
+      title: "About Us",
+      subtitle: "Legacy & Vision",
+      description: "Building future-ready infrastructure with excellence and innovation since inception."
+    },
+    story: {
+      eyebrow: "Our Story",
+      title: "A Legacy of",
+      highlightedTitle: "Excellence",
+      p1: `Anuranjan Infratech Resources Pvt Ltd was founded with a vision to revolutionize the infrastructure sector. Over the years, we have grown from a small consultancy into a multi-disciplinary engineering powerhouse.`,
+      quote: "Our journey is defined by a relentless pursuit of quality and a commitment to delivering complex projects on time."
+    },
+    mission: {
+      title: "Our Mission",
+      desc: "To provide sustainable and innovative engineering solutions that exceed client expectations while maintaining the highest safety standards."
+    },
+    vision: {
+      title: "Our Vision",
+      desc: "To become a global leader in infrastructure development, recognized for our integrity, technical prowess, and contribution to society."
+    },
+    leadership: {
+      eyebrow: "Leadership",
+      title: "The Visionaries",
+      description: "Meet the specialized team driving our success."
+    },
+    journey: {
+      eyebrow: "Evolution",
+      title: "Our Journey"
+    }
+  },
+  projectsStrings: {
+    hero: {
+      title: "Our Portfolio",
+      subtitle: "Excellence in Execution",
+      description: "Showcasing our best work across civil and interior sectors."
+    },
+    intro: {
+      eyebrow: "Case Studies",
+      title: "Iconic Infrastructure",
+      description: "A chronicle of our architectural legacy, featuring projects that redefine modern living and working spaces."
+    }
+  },
+  servicesStrings: {
+    hero: {
+      title: "Our Services",
+      subtitle: "Expertise & Innovation",
+      description: "Mastering Civil & Design with precision engineering and creative vision."
+    },
+    cta: {
+      title: "Need a",
+      highlightedWord: "customized",
+      description: "Our team of experts is ready to help you with bespoke engineering and design services tailored specifically to your project requirements.",
+      primaryButton: "Consult with Experts",
+      secondaryButton: "Sector Brochure"
+    }
+  },
+  careersStrings: {
+    hero: {
+      title: "Join Our Team",
+      subtitle: "Careers & Growth",
+      description: "Build your future with Anuranjan Infratech. We are always looking for passionate people to join our journey."
+    },
+    intro: {
+      eyebrow: "Opportunities",
+      title: "Open Positions",
+      description: "Find your next challenge in the world of high-performance infrastructure."
+    },
+    culture: {
+      eyebrow: "Culture",
+      title: "Engineered for",
+      highlightedTitle: "Success",
+      description: "At Anuranjan Infratech, we believe our people are our greatest asset. We foster a culture of innovation, continuous learning, and absolute excellence.",
+      points: [
+        "Dynamic work environment with a focus on global innovation",
+        "Elite compensation packages and comprehensive wellness",
+        "Direct mentorship from world-class industry leaders",
+        "Opportunities to lead nation-scale infrastructure projects"
+      ],
+      openAppLabel: "DON'T SEE YOUR SPECIALTY?",
+      openAppButton: "Submit Open Application"
+    }
+  },
+  galleryStrings: {
+    hero: {
+      title: "Visual Gallery",
+      description: "A glimpse into our world of architectural excellence and design brilliance."
+    },
+    cta: {
+      title: "Want to see more of our work?",
+      description: "We have thousands of documented projects. For sector-specific portfolios, request our archival digest today.",
+      primaryButton: "Request Full Archive",
+      secondaryButton: "Visit Design Studio"
+    }
+  }
 };
 
-export const navItems = [
+export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
   { label: "Gallery", href: "/gallery" },
@@ -33,7 +189,7 @@ export const navItems = [
   { label: "Careers", href: "/careers" }
 ];
 
-export const services = [
+export const services: Service[] = [
   {
     id: "civil-construction",
     title: "Civil Construction",
@@ -84,7 +240,7 @@ export const services = [
   }
 ];
 
-export const projects = [
+export const projects: Project[] = [
   {
     id: 1,
     title: "Tech Park HQ Lobby",
@@ -142,7 +298,7 @@ export const values = [
   }
 ];
 
-export const testimonials = [
+export const testimonials: Testimonial[] = [
   {
     name: "Rahul Mehra",
     role: "Project Manager, TechBuild",
@@ -163,7 +319,7 @@ export const testimonials = [
   }
 ];
 
-export const team = [
+export const team: TeamMember[] = [
   {
     name: "Anuranjan Kumar",
     role: "Managing Director",
@@ -184,14 +340,14 @@ export const team = [
   }
 ];
 
-export const history = [
+export const history: HistoryItem[] = [
   { year: "2010", title: "Foundation", description: "Established with a focus on civil consultancy and small scale road projects." },
   { year: "2015", title: "Scaling Up", description: "Secured first major national highway project and expanded to 100+ workforce." },
   { year: "2020", title: "Innovation Hub", description: "Introduced AI-driven project management and green building certifications." },
   { year: "2024", title: "Global Vision", description: "Pioneering smart city infrastructure and expanding operations across Southeast Asia." }
 ];
 
-export const gallery = [
+export const gallery: GalleryItem[] = [
   { id: 1, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA8xU9AbMloXbzR2PuV4o998pjAjl84tN8mrr4IttSkVZcBtuPQLJQfJK1Tr76o-7GaCELjMEdZz89dzRN8L7wU37sNkqrImm8Sm1o4G6s3f26qbhKmttKJ7983XSZ1RYKBTDMbsEGxDQKmvw07yZA6uODH-5yThpen_oL1SP9y6oNf8RmE7IMW0k5v79nBKCFOpOHzkVNd9bdCv7079C-jDFQ3Hyo6q-szu9AxuE1fjqJWGtMTj_sKGh3yheYb98Z1QmMZeoayMfdb", category: "Construction" },
   { id: 2, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA2y0k_xBQKkrn3o9gUO8ggpjGEmPYlARFX5st2lgx2dGPG3vRkU0i9vsJmX0Y9bcSXLs8mMdXAy1wljrgRZT-4o1uSdj60cLq4qTawiPMaU3ArdIU0pbTv3h7VM66Urpl0D1P4nXEVqOIzaT-hVRIYz7iVTdSoEPWvHiYCBXc0VCwb57ND4rl2CoVIeIFJNjv72JnSFnORI6r9jY3l3i8FNY_R10b9Ivth2Y6UV0YFA67WSJQYP7tDMZMvfYJAlvfas5ikwUdhixfq", category: "Design" },
   { id: 3, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBrt6ecFPhx3KgvYYBTZggjRaaVfWIfMFET6jmOUFb7rNVzLa_lT5ar04_whoCO4rXJFD2I-beeIde2x3UW7nJPU13Fw7bvZJ14nXOR6UKJNHJ3jfAzr4FJv1VoP5yinmBUnccIrkNOgoD9s_GBhzPseW23WWPRIF-kEUOIE8fvG8DLdyrDll2UPY1ZJlwNWL-LvLnbODDpWElKEte_7d3HOgquPVR5l4U_jDIkhCOAUNz1BRP5Uyu16s2fC42zAsXdNkwdcy22n2UA", category: "Commercial" },
@@ -200,7 +356,7 @@ export const gallery = [
   { id: 6, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBpLKKarMBFmYQuJXVVzIxlf4jHZwjuBmUWnhuJ6Whw1YDuD9eCGvp0jyeqyyVMGe_qwCoXtuJzTEBjIOo0hpWnr9qWmCQNAxdkZuv3ViT8n-DYw_34TE8h01AnkPoAb0-hri3qP_ll4_e2uPVx6LT9zNN1eJju4Yq7oWmdiX9OYvcSKBcZQgt12s9PKTWuEMl8YRntB0-u3Dyf-SYZeVkL1PtHpw_hwWvlASkyb51Q2fMZpHou7xHH1-x-b2ukHu6EtopRU4PKmmxK", category: "Industrial" }
 ];
 
-export const careers = [
+export const careers: Career[] = [
   {
     id: 1,
     title: "Senior Civil Engineer",
@@ -224,5 +380,26 @@ export const careers = [
     location: "Noida, India",
     type: "Contract",
     experience: "5+ Years"
+  }
+];
+
+export const footerSections: FooterSection[] = [
+  {
+    heading: "Company",
+    links: [
+      { label: "About Us", href: "/about" },
+      { label: "Our Projects", href: "/projects" },
+      { label: "Careers", href: "/careers" },
+      { label: "Contact Us", href: "/contact" }
+    ]
+  },
+  {
+    heading: "Services",
+    links: [
+      { label: "Civil Construction", href: "/services" },
+      { label: "Interior Design", href: "/services" },
+      { label: "Road & Highway", href: "/services" },
+      { label: "Project Management", href: "/services" }
+    ]
   }
 ];

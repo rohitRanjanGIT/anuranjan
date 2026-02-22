@@ -10,6 +10,9 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Anuranjan Infratech | Building Excellence, Designing Dreams",
   description: "Excellence in infrastructure and construction since 1998. Building tomorrow's landmarks with precision and integrity.",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 export default function RootLayout({
