@@ -26,7 +26,7 @@ export default function Overview() {
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2y0k_xBQKkrn3o9gUO8ggpjGEmPYlARFX5st2lgx2dGPG3vRkU0i9vsJmX0Y9bcSXLs8mMdXAy1wljrgRZT-4o1uSdj60cLq4qTawiPMaU3ArdIU0pbTv3h7VM66Urpl0D1P4nXEVqOIzaT-hVRIYz7iVTdSoEPWvHiYCBXc0VCwb57ND4rl2CoVIeIFJNjv72JnSFnORI6r9jY3l3i8FNY_R10b9Ivth2Y6UV0YFA67WSJQYP7tDMZMvfYJAlvfas5ikwUdhixfq"
                             />
                         </div>
-                        <div className="absolute -bottom-12 -right-12 bg-secondary p-8 md:p-12 rounded-[2rem] text-white shadow-xl hidden lg:block border border-white/10 backdrop-blur-md">
+                        <div className="absolute -bottom-10 -right-10 bg-secondary p-8 md:p-12 rounded-[2rem] text-white shadow-2xl z-20 hidden lg:block border border-white/10 backdrop-blur-md">
                             <p className="text-5xl md:text-6xl font-extrabold tracking-tighter text-primary">{siteConfig.experienceYears}+</p>
                             <p className="eyebrow text-white/60 mt-3">{overview.yearsLabel}</p>
                         </div>
@@ -45,7 +45,7 @@ export default function Overview() {
                                 {overview.eyebrow}
                             </span>
                             <h3 className="text-4xl lg:text-5xl font-extrabold text-secondary leading-tight tracking-tight">
-                                {overview.title} <span className="text-primary italic font-light">{overview.highlightedTitle}</span>.
+                                {overview.title} <span className="text-primary italic font-light">{overview.highlightedTitle}</span>
                             </h3>
                         </div>
                         <p className="text-secondary/70 text-lg md:text-xl leading-relaxed font-light">
