@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { fadeUp, slideInLeft } from "@/lib/animations";
 import { siteConfig } from "@/lib/data/data";
+import MagicBento from "./MagicBento";
 
 export default function Overview() {
     const { overview } = siteConfig.homeStrings;
@@ -51,20 +52,38 @@ export default function Overview() {
                         <p className="text-secondary/70 text-lg md:text-xl leading-relaxed font-light">
                             {overview.description}
                         </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
-                            {[
-                                { title: "Our Mission", desc: "Quality-driven sustainable building solutions.", icon: "shutter_speed" },
-                                { title: "Our Vision", desc: "To be the industry leader in infrastructure innovation.", icon: "visibility" }
-                            ].map((item, i) => (
-                                <div key={i} className="flex flex-col gap-4 p-6 md:p-8 rounded-[0.625rem] bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-md transition-all duration-300">
-                                    <span className="material-symbols-outlined text-primary text-3xl">{item.icon}</span>
-                                    <div>
-                                        <h4 className="font-bold text-secondary text-lg mb-2">{item.title}</h4>
-                                        <p className="text-sm text-secondary/60 font-medium leading-relaxed">{item.desc}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <MagicBento
+                            cards={[
+                                {
+                                    title: "Our Mission",
+                                    description: "Quality-driven sustainable building solutions.",
+                                    icon: "shutter_speed",
+                                    label: "Commitment",
+                                    color: "#f8fafc",
+                                    className: "!text-secondary !border-slate-100 !min-h-[300px] !p-12 !flex !flex-col !justify-start",
+                                    textAutoHide: false,
+                                    titleClassName: "!text-4xl !font-extrabold !text-secondary !mb-6",
+                                    descriptionClassName: "!text-lg !font-medium !text-secondary/70 !leading-relaxed"
+                                },
+                                {
+                                    title: "Our Vision",
+                                    description: "To be the industry leader in infrastructure innovation.",
+                                    icon: "visibility",
+                                    label: "Future",
+                                    color: "#f8fafc",
+                                    className: "!text-secondary !border-slate-100 !min-h-[300px] !p-12 !flex !flex-col !justify-start",
+                                    textAutoHide: false,
+                                    titleClassName: "!text-4xl !font-extrabold !text-secondary !mb-6",
+                                    descriptionClassName: "!text-lg !font-medium !text-secondary/70 !leading-relaxed"
+                                }
+                            ]}
+                            enableStars={false}
+                            enableSpotlight={true}
+                            enableBorderGlow={true}
+                            glowColor="211, 49, 49"
+                            className="!p-0 !max-w-none"
+                            gridCols="grid-cols-1 sm:grid-cols-2"
+                        />
                     </motion.div>
                 </div>
             </div>

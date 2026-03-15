@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/animations";
 import { testimonials, siteConfig } from "@/lib/data/data";
+import { ParticleCard } from "./MagicBento";
 
 export default function TestimonialsSection() {
     const { testimonials: testimonialStrings } = siteConfig.homeStrings;
@@ -28,23 +29,33 @@ export default function TestimonialsSection() {
                         <motion.div
                             key={i}
                             variants={fadeUp}
-                            className="bg-white/5 backdrop-blur-md p-10 md:p-12 rounded-[2rem] md:rounded-[3rem] border border-white/10 hover:bg-white/[0.08] transition-all duration-300"
                         >
-                            <div className="flex gap-1 mb-8">
-                                {[1, 2, 3, 4, 5].map(s => <span key={s} className="material-symbols-outlined text-primary text-sm font-bold">star</span>)}
-                            </div>
-                            <p className="text-white/80 mb-12 text-lg md:text-xl italic font-light leading-relaxed">
-                                &quot;{t.content}&quot;
-                            </p>
-                            <div className="flex items-center gap-5">
-                                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-sm">
-                                    <img alt={t.name} src={t.avatar} className="w-full h-full object-cover" />
+                            <ParticleCard
+                                className="bg-white/5 backdrop-blur-md p-10 md:p-12 rounded-[2rem] md:rounded-[3rem] border border-white/10 hover:bg-white/[0.08] transition-all duration-300 h-full"
+                                glowColor="211, 49, 49"
+                                particleCount={15}
+                                enableTilt={true}
+                                clickEffect={true}
+                                enableMagnetism={true}
+                            >
+                                <div className="relative z-10">
+                                    <div className="flex gap-1 mb-8">
+                                        {[1, 2, 3, 4, 5].map(s => <span key={s} className="material-symbols-outlined text-primary text-sm font-bold">star</span>)}
+                                    </div>
+                                    <p className="text-white/80 mb-12 text-lg md:text-xl italic font-light leading-relaxed">
+                                        &quot;{t.content}&quot;
+                                    </p>
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl overflow-hidden border border-white/10 shadow-sm">
+                                            <img alt={t.name} src={t.avatar} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <h6 className="font-bold text-lg text-white">{t.name}</h6>
+                                            <p className="eyebrow text-[10px] text-primary">{t.role}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 className="font-bold text-lg text-white">{t.name}</h6>
-                                    <p className="eyebrow text-[10px] text-primary">{t.role}</p>
-                                </div>
-                            </div>
+                            </ParticleCard>
                         </motion.div>
                     ))}
                 </motion.div>
