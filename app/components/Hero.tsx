@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 import { useState, useEffect, useCallback } from "react";
 import { gallery } from "@/lib/data/data";
@@ -39,13 +39,13 @@ function buildSlides(backgroundImage: string): Slide[] {
     ];
 }
 
-const bgVariants = {
+const bgVariants: Variants = {
     enter: (dir: number) => ({ x: dir * 40, opacity: 0, scale: 1.03 }),
     center: { x: 0, opacity: 1, scale: 1.06 },
     exit: (dir: number) => ({ x: dir * -40, opacity: 0, scale: 1 }),
 };
 
-const contentVariants = {
+const contentVariants: Variants = {
     hidden: { opacity: 0, y: 22 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
     exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease: "easeIn" } },

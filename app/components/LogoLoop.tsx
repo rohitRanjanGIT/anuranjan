@@ -292,7 +292,7 @@ export const LogoLoop = React.memo<LogoLoopProps>(
           '[--logoloop-logoHeight:28px]',
           '[--logoloop-fadeColorAuto:#ffffff]',
           'dark:[--logoloop-fadeColorAuto:#0b0b0b]',
-          scaleOnHover && 'py-[calc(var(--logoloop-logoHeight)*0.1)]',
+          scaleOnHover && 'py-[calc(var(--logoloop-logoHeight)*0.075)] md:py-[calc(var(--logoloop-logoHeight)*0.1)]',
           className
         ),
       [isVertical, scaleOnHover, className]
@@ -311,8 +311,10 @@ export const LogoLoop = React.memo<LogoLoopProps>(
           return (
             <li
               className={cx(
-                'flex-none text-[length:var(--logoloop-logoHeight)] leading-[1]',
-                isVertical ? 'mb-[var(--logoloop-gap)]' : 'mr-[var(--logoloop-gap)]',
+                'flex-none text-[length:calc(var(--logoloop-logoHeight)*0.75)] md:text-[length:var(--logoloop-logoHeight)] leading-[1]',
+                isVertical
+                  ? 'mb-[calc(var(--logoloop-gap)*0.5)] md:mb-[var(--logoloop-gap)]'
+                  : 'mr-[calc(var(--logoloop-gap)*0.5)] md:mr-[var(--logoloop-gap)]',
                 scaleOnHover && 'overflow-visible group/item'
               )}
               key={key}
@@ -340,7 +342,7 @@ export const LogoLoop = React.memo<LogoLoopProps>(
         ) : (
           <img
             className={cx(
-              'h-[var(--logoloop-logoHeight)] w-auto block object-contain',
+              'h-[calc(var(--logoloop-logoHeight)*0.75)] md:h-[var(--logoloop-logoHeight)] w-auto block object-contain',
               '[-webkit-user-drag:none] pointer-events-none',
               '[image-rendering:-webkit-optimize-contrast]',
               'motion-reduce:transition-none',
@@ -386,8 +388,10 @@ export const LogoLoop = React.memo<LogoLoopProps>(
         return (
           <li
             className={cx(
-              'flex-none text-[length:var(--logoloop-logoHeight)] leading-[1]',
-              isVertical ? 'mb-[var(--logoloop-gap)]' : 'mr-[var(--logoloop-gap)]',
+              'flex-none text-[length:calc(var(--logoloop-logoHeight)*0.75)] md:text-[length:var(--logoloop-logoHeight)] leading-[1]',
+              isVertical
+                ? 'mb-[calc(var(--logoloop-gap)*0.5)] md:mb-[var(--logoloop-gap)]'
+                : 'mr-[calc(var(--logoloop-gap)*0.5)] md:mr-[var(--logoloop-gap)]',
               scaleOnHover && 'overflow-visible group/item'
             )}
             key={key}
