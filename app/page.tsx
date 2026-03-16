@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Overview from "./components/Overview";
 import ServicesGrid from "./components/ServicesGrid";
 import FeaturedProjects from "./components/FeaturedProjects";
+import Clients from "./components/Clients";
 import TestimonialsSection from "./components/TestimonialsSection";
 import FinalCTA from "./components/FinalCTA";
 import { siteConfig } from "@/lib/data/data";
@@ -35,6 +36,7 @@ export default function Home() {
       <Overview />
       <ServicesGrid />
       <FeaturedProjects />
+      <Clients />
       <TestimonialsSection />
       <FinalCTA />
 

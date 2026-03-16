@@ -5,6 +5,8 @@ import { fadeUp } from "@/lib/animations";
 import { useState, useEffect, useCallback } from "react";
 import { gallery } from "@/lib/data/data";
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
 interface HeroProps {
     title: string;
     subtitle?: string;
@@ -16,8 +18,6 @@ interface HeroProps {
     secondaryButtonText?: string;
 }
 
-// ─── Carousel Slides ──────────────────────────────────────────────────────────
-
 interface Slide {
     type: "hero" | "project";
     image: string;
@@ -26,30 +26,63 @@ interface Slide {
     category?: string;
 }
 
-function buildSlides(backgroundImage: string): Slide[] {
-    const gallerySlides: Slide[] = gallery.map((g) => ({
-        type: "project",
-        image: g.image,
-        category: g.category,
-    }));
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function buildSlides(backgroundImage: string): Slide[] {
     return [
         { type: "hero", image: backgroundImage },
-        ...gallerySlides,
+        ...gallery.map((g) => ({
+            type: "project" as const,
+            image: g.image,
+            category: g.category,
+        })),
     ];
 }
 
-// ─── Large (Carousel) Hero ────────────────────────────────────────────────────
+const bgVariants = {
+    enter: (dir: number) => ({ x: dir * 40, opacity: 0, scale: 1.03 }),
+    center: { x: 0, opacity: 1, scale: 1.06 },
+    exit: (dir: number) => ({ x: dir * -40, opacity: 0, scale: 1 }),
+};
 
-interface CarouselHeroProps extends HeroProps {
-    title: string;
-    highlightedText?: string;
-    subtitle?: string;
-    description: string;
-    backgroundImage: string;
-    primaryButtonText?: string;
-    secondaryButtonText?: string;
+const contentVariants = {
+    hidden: { opacity: 0, y: 22 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } },
+    exit: { opacity: 0, y: -16, transition: { duration: 0.3, ease: "easeIn" } },
+};
+
+// ─── Shared Overlay ───────────────────────────────────────────────────────────
+
+function TextOverlay({ wide = false }: { wide?: boolean }) {
+    return (
+        <div
+            aria-hidden
+            className={`absolute bottom-0 left-0 z-10 pointer-events-none h-[85%] ${wide ? "w-full md:w-[80%] lg:w-[68%]" : "w-full md:w-[75%] lg:w-[60%]"}`}
+            style={{
+                background: "linear-gradient(to top right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 42%, transparent 78%)",
+                backdropFilter: "blur(8px)",
+                WebkitBackdropFilter: "blur(8px)",
+                maskImage: "linear-gradient(to top right, black 28%, transparent 78%)",
+                WebkitMaskImage: "linear-gradient(to top right, black 28%, transparent 78%)",
+            }}
+        />
+    );
 }
+
+// ─── Eyebrow Label ─────────────────────────────────────────────────────────────
+
+function Eyebrow({ text }: { text: string }) {
+    return (
+        <div className="flex items-center gap-3">
+            <span className="block w-7 h-px bg-primary shrink-0" />
+            <span className="eyebrow text-primary tracking-[0.22em] text-xs uppercase font-semibold">
+                {text}
+            </span>
+        </div>
+    );
+}
+
+// ─── Carousel Hero ─────────────────────────────────────────────────────────────
 
 function CarouselHero({
     title,
@@ -59,46 +92,35 @@ function CarouselHero({
     backgroundImage,
     primaryButtonText,
     secondaryButtonText,
-}: CarouselHeroProps) {
+}: HeroProps) {
     const slides = buildSlides(backgroundImage);
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState<1 | -1>(1);
 
-    const goTo = useCallback(
-        (index: number, dir: 1 | -1 = 1) => {
-            setDirection(dir);
-            setCurrent(index);
-        },
-        []
-    );
+    const goTo = useCallback((index: number, dir: 1 | -1 = 1) => {
+        setDirection(dir);
+        setCurrent(index);
+    }, []);
 
     const next = useCallback(() => {
-        const nextIndex = (current + 1) % slides.length;
-        goTo(nextIndex, 1);
+        goTo((current + 1) % slides.length, 1);
     }, [current, slides.length, goTo]);
 
     const prev = useCallback(() => {
-        const prevIndex = (current - 1 + slides.length) % slides.length;
-        goTo(prevIndex, -1);
+        goTo((current - 1 + slides.length) % slides.length, -1);
     }, [current, slides.length, goTo]);
 
-    // Auto-advance
     useEffect(() => {
-        const timer = setInterval(next, 5000);
+        const timer = setInterval(next, 5500);
         return () => clearInterval(timer);
     }, [next]);
 
     const slide = slides[current];
 
-    const bgVariants = {
-        enter: (dir: number) => ({ x: dir * 60, opacity: 0, scale: 1.04 }),
-        center: { x: 0, opacity: 1, scale: 1.05 },
-        exit: (dir: number) => ({ x: dir * -60, opacity: 0, scale: 1 }),
-    };
-
     return (
-        <section className="relative h-[90vh] flex items-center overflow-hidden bg-secondary">
-            {/* ── Background image with crossfade ── */}
+        <section className="relative h-[90vh] flex flex-col justify-end overflow-hidden bg-secondary">
+
+            {/* Background image */}
             <AnimatePresence initial={false} custom={direction} mode="sync">
                 <motion.div
                     key={current}
@@ -107,10 +129,10 @@ function CarouselHero({
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{ duration: 0.9, ease: [0.25, 0.46, 0.45, 0.94] }}
+                    transition={{ duration: 1.0, ease: [0.25, 0.46, 0.45, 0.94] }}
                     className="absolute inset-0 z-0"
                 >
-                    <div className="absolute inset-0 bg-gradient-to-b from-secondary/70 via-secondary/50 to-secondary/85 z-10" />
+                    <div className="absolute inset-0 bg-black/15 z-10 pointer-events-none" />
                     <img
                         src={slide.image}
                         alt={slide.title ?? title}
@@ -119,30 +141,24 @@ function CarouselHero({
                 </motion.div>
             </AnimatePresence>
 
-            {/* ── Content ── */}
-            <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-white w-full">
+            <TextOverlay wide />
+
+            {/* Content */}
+            <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-white w-full pb-24 md:pb-32 pt-32">
                 <AnimatePresence mode="wait">
                     {slide.type === "hero" ? (
-                        /* Slide 0 – Company info */
                         <motion.div
                             key="hero-content"
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.55, ease: "easeOut" }}
-                            className="max-w-3xl space-y-8"
+                            variants={contentVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                            className="max-w-3xl space-y-7"
                         >
-                            {subtitle && (
-                                <motion.div variants={fadeUp} initial="hidden" animate="visible" className="inline-block">
-                                    <h2 className="eyebrow text-primary mb-2 flex items-center gap-3">
-                                        <span className="w-8 h-[1px] bg-primary" />
-                                        {subtitle}
-                                    </h2>
-                                </motion.div>
-                            )}
+                            {subtitle && <Eyebrow text={subtitle} />}
 
-                            <h1 className="text-6xl md:text-8xl font-extrabold leading-[1.05] tracking-tight text-white">
-                                {title}{" "}
+                            <h1 className="text-6xl md:text-8xl font-extrabold leading-[1.04] tracking-tight">
+                                {title}
                                 {highlightedText && (
                                     <>
                                         <br />
@@ -151,22 +167,24 @@ function CarouselHero({
                                 )}
                             </h1>
 
-                            <div className="h-1 w-20 bg-primary" />
+                            <div className="h-px w-16 bg-primary/80" />
 
-                            <p className="text-xl md:text-2xl text-white/80 font-light leading-relaxed max-w-xl">
+                            <p className="text-lg md:text-xl text-white/75 font-light leading-relaxed max-w-lg">
                                 {description}
                             </p>
 
                             {(primaryButtonText || secondaryButtonText) && (
-                                <div className="flex flex-wrap gap-5 pt-4">
+                                <div className="flex flex-wrap gap-4 pt-3">
                                     {primaryButtonText && (
-                                        <button className="bg-primary hover:bg-white hover:text-secondary text-white px-10 py-4 md:py-5 rounded-full font-bold text-base transition-all duration-300 shadow-xl flex items-center gap-3 active:scale-95">
+                                        <button className="group inline-flex items-center gap-2.5 bg-primary hover:bg-white hover:text-secondary text-white px-9 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 shadow-lg active:scale-[0.97]">
                                             {primaryButtonText}
-                                            <span className="material-symbols-outlined text-sm">north_east</span>
+                                            <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                                                north_east
+                                            </span>
                                         </button>
                                     )}
                                     {secondaryButtonText && (
-                                        <button className="bg-transparent hover:bg-white/10 text-white border border-white/30 px-10 py-4 md:py-5 rounded-full font-bold text-base transition-all duration-300 backdrop-blur-sm active:scale-95">
+                                        <button className="inline-flex items-center gap-2 bg-white/8 hover:bg-white/15 text-white border border-white/20 px-9 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 backdrop-blur-sm active:scale-[0.97]">
                                             {secondaryButtonText}
                                         </button>
                                     )}
@@ -174,39 +192,37 @@ function CarouselHero({
                             )}
                         </motion.div>
                     ) : (
-                        /* Slides 1+ – Project showcase */
                         <motion.div
                             key={`project-${current}`}
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            transition={{ duration: 0.55, ease: "easeOut" }}
+                            variants={contentVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
                             className="max-w-3xl space-y-6"
                         >
-                            <div className="inline-block">
-                                <span className="eyebrow text-primary flex items-center gap-3">
-                                    <span className="w-8 h-[1px] bg-primary" />
-                                    {slide.category}
-                                </span>
-                            </div>
+                            {slide.category && <Eyebrow text={slide.category} />}
 
-                            <h1 className="text-5xl md:text-7xl font-extrabold leading-[1.05] tracking-tight text-white">
+                            <h2 className="text-5xl md:text-7xl font-extrabold leading-[1.04] tracking-tight">
                                 {slide.title}
-                            </h1>
+                            </h2>
 
-                            <div className="h-1 w-16 bg-primary" />
+                            <div className="h-px w-14 bg-primary/80" />
 
-                            <p className="text-lg md:text-xl text-white/70 font-light">
-                                {slide.label}
-                            </p>
+                            {slide.label && (
+                                <p className="text-base md:text-lg text-white/65 font-light">
+                                    {slide.label}
+                                </p>
+                            )}
 
-                            <div className="pt-2">
+                            <div className="pt-1">
                                 <a
                                     href="/projects"
-                                    className="inline-flex items-center gap-3 bg-primary hover:bg-white hover:text-secondary text-white px-8 py-4 rounded-full font-bold text-base transition-all duration-300 shadow-xl active:scale-95"
+                                    className="group inline-flex items-center gap-2.5 bg-primary hover:bg-white hover:text-secondary text-white px-8 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 shadow-lg active:scale-[0.97]"
                                 >
                                     View Project
-                                    <span className="material-symbols-outlined text-sm">north_east</span>
+                                    <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                                        north_east
+                                    </span>
                                 </a>
                             </div>
                         </motion.div>
@@ -214,47 +230,45 @@ function CarouselHero({
                 </AnimatePresence>
             </div>
 
-            {/* ── Carousel Controls ── */}
-            {/* Arrow buttons */}
-            <button
-                onClick={prev}
-                aria-label="Previous slide"
-                className="absolute left-5 md:left-8 top-1/2 -translate-y-1/2 z-30 text-white/70 hover:text-white transition-all duration-200 active:scale-90"
-            >
-                <span className="material-symbols-outlined text-4xl">chevron_left</span>
-            </button>
-            <button
-                onClick={next}
-                aria-label="Next slide"
-                className="absolute right-5 md:right-8 top-1/2 -translate-y-1/2 z-30 text-white/70 hover:text-white transition-all duration-200 active:scale-90"
-            >
-                <span className="material-symbols-outlined text-4xl">chevron_right</span>
-            </button>
+            {/* Arrow controls */}
+            {[
+                { label: "Previous slide", icon: "chevron_left", action: prev, side: "left-5 md:left-8" },
+                { label: "Next slide", icon: "chevron_right", action: next, side: "right-5 md:right-8" },
+            ].map(({ label, icon, action, side }) => (
+                <button
+                    key={label}
+                    onClick={action}
+                    aria-label={label}
+                    className={`absolute ${side} top-1/2 -translate-y-1/2 z-30 text-white hover:text-white transition-all duration-200 active:scale-90`}
+                >
+                    <span className="material-symbols-outlined text-4xl" style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.5))" }}>{icon}</span>
+                </button>
+            ))}
 
             {/* Dot indicators */}
-            <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2.5">
+            <div className="absolute bottom-9 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2">
                 {slides.map((_, i) => (
                     <button
                         key={i}
                         onClick={() => goTo(i, i > current ? 1 : -1)}
                         aria-label={`Go to slide ${i + 1}`}
-                        className={`transition-all duration-300 rounded-full ${i === current
-                            ? "w-7 h-2 bg-primary"
-                            : "w-2 h-2 bg-white/40 hover:bg-white/70"
+                        className={`rounded-full transition-all duration-400 ${i === current
+                            ? "w-6 h-1.5 bg-primary"
+                            : "w-1.5 h-1.5 bg-white/30 hover:bg-white/55"
                             }`}
                     />
                 ))}
             </div>
 
             {/* Slide counter */}
-            <div className="absolute bottom-10 right-6 md:right-12 z-30 text-white/50 text-xs font-mono tracking-widest select-none">
-                {String(current + 1).padStart(2, "0")} / {String(slides.length).padStart(2, "0")}
+            <div className="absolute bottom-8 right-6 md:right-12 z-30 text-white/35 text-[11px] font-mono tracking-[0.2em] select-none tabular-nums">
+                {String(current + 1).padStart(2, "0")}&thinsp;/&thinsp;{String(slides.length).padStart(2, "0")}
             </div>
         </section>
     );
 }
 
-// ─── Default (non-carousel) Hero ──────────────────────────────────────────────
+// ─── Static Hero ───────────────────────────────────────────────────────────────
 
 function StaticHero({
     title,
@@ -264,33 +278,34 @@ function StaticHero({
     backgroundImage,
 }: HeroProps) {
     return (
-        <section className="relative h-[500px] flex items-center overflow-hidden bg-secondary">
+        <section className="relative h-[500px] flex flex-col justify-end overflow-hidden bg-secondary">
             <div className="absolute inset-0 z-0 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-b from-secondary/60 via-secondary/40 to-secondary/80 z-10" />
+                <div className="absolute inset-0 bg-black/15 z-10 pointer-events-none" />
                 <img
                     alt={title}
-                    className="w-full h-full object-cover scale-105 animate-subtle-zoom opacity-80"
                     src={backgroundImage}
+                    className="w-full h-full object-cover scale-105 animate-subtle-zoom opacity-80"
                 />
             </div>
-            <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-white w-full">
-                <div className="max-w-2xl space-y-8">
+
+            <TextOverlay />
+
+            <div className="relative z-20 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 text-white w-full pb-16 md:pb-24 pt-20">
+                <div className="max-w-2xl space-y-6">
                     {subtitle && (
-                        <motion.div variants={fadeUp} initial="hidden" animate="visible" className="inline-block">
-                            <h2 className="eyebrow text-primary mb-2 flex items-center gap-3">
-                                <span className="w-8 h-[1px] bg-primary" />
-                                {subtitle}
-                            </h2>
+                        <motion.div variants={fadeUp} initial="hidden" animate="visible">
+                            <Eyebrow text={subtitle} />
                         </motion.div>
                     )}
+
                     <motion.h1
                         variants={fadeUp}
                         initial="hidden"
                         animate="visible"
                         transition={{ delay: 0.1 }}
-                        className="text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-white"
+                        className="text-5xl md:text-6xl font-extrabold leading-[1.04] tracking-tight"
                     >
-                        {title}{" "}
+                        {title}
                         {highlightedText && (
                             <>
                                 <br />
@@ -298,19 +313,21 @@ function StaticHero({
                             </>
                         )}
                     </motion.h1>
+
                     <motion.div
                         variants={fadeUp}
                         initial="hidden"
                         animate="visible"
-                        transition={{ delay: 0.2 }}
-                        className="h-1 w-20 bg-primary"
+                        transition={{ delay: 0.18 }}
+                        className="h-px w-14 bg-primary/80"
                     />
+
                     <motion.p
                         variants={fadeUp}
                         initial="hidden"
                         animate="visible"
-                        transition={{ delay: 0.3 }}
-                        className="text-lg md:text-xl text-white/80 font-light leading-relaxed max-w-xl"
+                        transition={{ delay: 0.26 }}
+                        className="text-base md:text-lg text-white/75 font-light leading-relaxed max-w-lg"
                     >
                         {description}
                     </motion.p>
@@ -320,11 +337,8 @@ function StaticHero({
     );
 }
 
-// ─── Public Export ─────────────────────────────────────────────────────────────
+// ─── Export ────────────────────────────────────────────────────────────────────
 
 export default function Hero(props: HeroProps) {
-    if (props.large) {
-        return <CarouselHero {...props} />;
-    }
-    return <StaticHero {...props} />;
+    return props.large ? <CarouselHero {...props} /> : <StaticHero {...props} />;
 }
