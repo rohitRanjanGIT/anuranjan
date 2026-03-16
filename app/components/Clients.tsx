@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import LogoLoop, { LogoItem } from "@/components/LogoLoop";
+import LogoLoop, { LogoItem } from "@/app/components/LogoLoop";
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 
