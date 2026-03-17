@@ -89,7 +89,7 @@ export default function Clients() {
                     logos={middleLogos}
                     direction="right"
                     speed={70}
-                    hoverSpeed={20}
+                    hoverSpeed={-20}
                     logoHeight={120}
                     gap={85}
                     fadeOut={true}

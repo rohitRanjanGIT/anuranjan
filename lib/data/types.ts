@@ -28,6 +28,8 @@ export interface Project {
     fullImage: string;
     href?: string;
     location?: string;
+    status?: "ongoing" | "completed";
+    year?: string;
 }
 
 export interface Stat {
