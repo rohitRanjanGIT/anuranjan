@@ -26,6 +26,7 @@ export interface Project {
     type: string;
     image: string;
     fullImage: string;
+    images?: string[];
     href?: string;
     location?: string;
     status?: "ongoing" | "completed";

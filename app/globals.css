@@ -2,6 +2,11 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@plugin "daisyui" {
+  themes: false;
+  /* This tells DaisyUI NOT to override your colors */
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

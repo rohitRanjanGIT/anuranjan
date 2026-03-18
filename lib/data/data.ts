@@ -248,6 +248,12 @@ export const projects: Project[] = [
     type: "Interior Design & Execution",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBrt6ecFPhx3KgvYYBTZggjRaaVfWIfMFET6jmOUFb7rNVzLa_lT5ar04_whoCO4rXJFD2I-beeIde2x3UW7nJPU13Fw7bvZJ14nXOR6UKJNHJ3jfAzr4FJv1VoP5yinmBUnccIrkNOgoD9s_GBhzPseW23WWPRIF-kEUOIE8fvG8DLdyrDll2UPY1ZJlwNWL-LvLnbODDpWElKEte_7d3HOgquPVR5l4U_jDIkhCOAUNz1BRP5Uyu16s2fC42zAsXdNkwdcy22n2UA",
     fullImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBrt6ecFPhx3KgvYYBTZggjRaaVfWIfMFET6jmOUFb7rNVzLa_lT5ar04_whoCO4rXJFD2I-beeIde2x3UW7nJPU13Fw7bvZJ14nXOR6UKJNHJ3jfAzr4FJv1VoP5yinmBUnccIrkNOgoD9s_GBhzPseW23WWPRIF-kEUOIE8fvG8DLdyrDll2UPY1ZJlwNWL-LvLnbODDpWElKEte_7d3HOgquPVR5l4U_jDIkhCOAUNz1BRP5Uyu16s2fC42zAsXdNkwdcy22n2UA",
+    images: [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1431540015161-0bf868a2d407?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2023"
   },
@@ -258,6 +264,12 @@ export const projects: Project[] = [
     type: "Full Civil Construction",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvzrXxqpQ8_TDyMsJT4exjCTprsNAlYlS_IXXP-ffXi75jWbrT1h2albO2SCmJyoh_ZzLEaE64TT_w4k3X3BhmeEd-QjkuuKY-CJ0rP5LbJv-AtA7PZjN5SnYP60QU5GJ3B69dndAOPmtvV7GcQLc8EXhtYr10HfKnJK1DX98RHB1gwlLsgdh5r3t4jyQTtOf2zWUCB17xN1iaZAkcGsfwU0yQHDzXlKSkVjBOSbceoylVDODq2iNX7gPf6nbEvN0UkZ_MZ8ektIkK",
     fullImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvzrXxqpQ8_TDyMsJT4exjCTprsNAlYlS_IXXP-ffXi75jWbrT1h2albO2SCmJyoh_ZzLEaE64TT_w4k3X3BhmeEd-QjkuuKY-CJ0rP5LbJv-AtA7PZjN5SnYP60QU5GJ3B69dndAOPmtvV7GcQLc8EXhtYr10HfKnJK1DX98RHB1gwlLsgdh5r3t4jyQTtOf2zWUCB17xN1iaZAkcGsfwU0yQHDzXlKSkVjBOSbceoylVDODq2iNX7gPf6nbEvN0UkZ_MZ8ektIkK",
+    images: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1460317442991-0ec239f3d6b9?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "ongoing",
     year: "2025"
   },
@@ -268,6 +280,12 @@ export const projects: Project[] = [
     type: "Bespoke Furnishing",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqNDgwCldCXF5u-JyNAKrYeAeI6-ROHh-ByjyL7dgRyDkqw5vwUMwK9uRNKDtsWsjIpo0Ug14k4UTRESxHpDIXigvnOcEDgvUJAwoeWYXcXYHs9S1SwWYDZn7lzk2wked5CuOlBIEWI2nfRgxvw4f4ss5AV4OpjdUEMbNv063PGsGY7cEioAH8UdG1o6EAheeNxT1cjFE6muZzfwxRI4wM6uh-uBpO0qJKZEnPvIz7w30ZpMB3eitNk88xfIkxVU4vtb0VQwyEx-s1",
     fullImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqNDgwCldCXF5u-JyNAKrYeAeI6-ROHh-ByjyL7dgRyDkqw5vwUMwK9uRNKDtsWsjIpo0Ug14k4UTRESxHpDIXigvnOcEDgvUJAwoeWYXcXYHs9S1SwWYDZn7lzk2wked5CuOlBIEWI2nfRgxvw4f4ss5AV4OpjdUEMbNv063PGsGY7cEioAH8UdG1o6EAheeNxT1cjFE6muZzfwxRI4wM6uh-uBpO0qJKZEnPvIz7w30ZpMB3eitNk88xfIkxVU4vtb0VQwyEx-s1",
+    images: [
+      "https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1613977257592-4871e5fcd7c4?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2024"
   },
@@ -278,6 +296,12 @@ export const projects: Project[] = [
     type: "Structural Steel Works",
     image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBpLKKarMBFmYQuJXVVzIxlf4jHZwjuBmUWnhuJ6Whw1YDuD9eCGvp0jyeqyyVMGe_qwCoXtuJzTEBjIOo0hpWnr9qWmCQNAxdkZuv3ViT8n-DYw_34TE8h01AnkPoAb0-hri3qP_ll4_e2uPVx6LT9zNN1eJju4Yq7oWmdiX9OYvcSKBcZQgt12s9PKTWuEMl8YRntB0-u3Dyf-SYZeVkL1PtHpw_hwWvlASkyb51Q2fMZpHou7xHH1-x-b2ukHu6EtopRU4PKmmxK",
     fullImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuBpLKKarMBFmYQuJXVVzIxlf4jHZwjuBmUWnhuJ6Whw1YDuD9eCGvp0jyeqyyVMGe_qwCoXtuJzTEBjIOo0hpWnr9qWmCQNAxdkZuv3ViT8n-DYw_34TE8h01AnkPoAb0-hri3qP_ll4_e2uPVx6LT9zNN1eJju4Yq7oWmdiX9OYvcSKBcZQgt12s9PKTWuEMl8YRntB0-u3Dyf-SYZeVkL1PtHpw_hwWvlASkyb51Q2fMZpHou7xHH1-x-b2ukHu6EtopRU4PKmmxK",
+    images: [
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1565610816827-0243fe8d5236?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2022"
   },
@@ -288,6 +312,12 @@ export const projects: Project[] = [
     type: "Architectural Design",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
     fullImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1600607687940-4e5a994239b7?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1600566753376-12c8ab7fb15b?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2023"
   },
@@ -298,6 +328,12 @@ export const projects: Project[] = [
     type: "High-Rise Construction",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
     fullImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1460317442991-0ec239f3d6b9?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "ongoing",
     year: "2025"
   },
@@ -308,6 +344,12 @@ export const projects: Project[] = [
     type: "Renovation & Fit-out",
     image: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&q=80&w=800",
     fullImage: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faeaa6?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1618219959362-21959b5a40b8?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2022"
   },
@@ -318,6 +360,12 @@ export const projects: Project[] = [
     type: "Heavy Industrial Build",
     image: "https://images.unsplash.com/photo-1565610816827-0243fe8d5236?auto=format&fit=crop&q=80&w=800",
     fullImage: "https://images.unsplash.com/photo-1565610816827-0243fe8d5236?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1565610816827-0243fe8d5236?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1553413077-190dd305871c?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "ongoing",
     year: "2026"
   },
@@ -328,6 +376,12 @@ export const projects: Project[] = [
     type: "Premium Housing Society",
     image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800",
     fullImage: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200",
+    images: [
+      "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1460317442991-0ec239f3d6b9?auto=format&fit=crop&q=80&w=1200",
+      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200"
+    ],
     status: "completed",
     year: "2024"
   }

@@ -17,10 +17,19 @@ const CATEGORIES = [
     { id: "Industrial", label: "Industrial", icon: "factory" },
 ];
 
-// ─── Project Card (Sharp edges, clean typography) ────────────────────────────────
+// ─── Project Card (Hover Gallery Integrated) ───────────────────────────────────
 
-function ProjectCard({ project }: { project: (typeof projects)[0] }) {
+// We extend your existing project type to optionally accept an `images` array
+type ProjectType = (typeof projects)[0] & { images?: string[] };
+
+function ProjectCard({ project }: { project: ProjectType }) {
     const isOngoing = project.status === "ongoing";
+
+    // Grab up to 4 images for the gallery. If 'images' doesn't exist in your data, 
+    // it safely falls back to just showing the main fullImage.
+    const galleryImages = project.images && project.images.length > 0
+        ? project.images.slice(0, 4)
+        : [project.fullImage];
 
     return (
         <motion.article
@@ -30,21 +39,33 @@ function ProjectCard({ project }: { project: (typeof projects)[0] }) {
             initial="hidden"
             animate="visible"
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-            className="group cursor-pointer bg-slate-50 relative rounded-3xl overflow-hidden"
+            className="group cursor-pointer bg-slate-50 relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
         >
-            {/* Image container - Curved edges for a modern feel */}
             <div className="relative overflow-hidden aspect-[4/3] rounded-t-3xl border-b-0">
-                <img
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                    alt={project.title}
-                    src={project.fullImage}
-                />
 
-                {/* Elegant dark gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90" />
+                {/* 
+                  DAISY UI HOVER GALLERY 
+                  Takes up the full width/height. Retains the scale-105 hover effect.
+                */}
+                <figure className="hover-gallery w-full h-full m-0 transition-transform duration-700 ease-out group-hover:scale-105 bg-slate-200">
+                    {galleryImages.map((imgSrc, i) => (
+                        <img
+                            key={i}
+                            className="w-full h-full object-cover"
+                            alt={`${project.title} preview ${i + 1}`}
+                            src={imgSrc}
+                        />
+                    ))}
+                </figure>
 
-                {/* Badges - Premium curved pills */}
-                <div className="absolute top-5 left-5 flex items-center gap-2 z-10">
+                {/* 
+                  IMPORTANT: Added 'pointer-events-none' to overlays!
+                  Without this, the gradient block the mouse from touching the hover-gallery.
+                */}
+                <div className="absolute inset-0 bg-gradient-to-t from-secondary/95 via-secondary/20 to-transparent opacity-70 transition-opacity duration-500 group-hover:opacity-90 pointer-events-none" />
+
+                {/* Badges - pointer-events-none */}
+                <div className="absolute top-5 left-5 flex items-center gap-2 z-10 pointer-events-none">
                     <span className="bg-white/95 backdrop-blur-md text-secondary text-[9px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 shadow-sm rounded-full">
                         {project.category}
                     </span>
@@ -56,13 +77,13 @@ function ProjectCard({ project }: { project: (typeof projects)[0] }) {
                     )}
                 </div>
 
-                {/* Arrow icon on hover - Curved architectural detail */}
-                <div className="absolute top-5 right-5 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 z-10 rounded-xl">
+                {/* Arrow icon on hover - pointer-events-none */}
+                <div className="absolute top-5 right-5 w-10 h-10 bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center opacity-0 transition-all duration-300 group-hover:opacity-100 z-10 rounded-xl pointer-events-none">
                     <span className="material-symbols-outlined text-white text-lg font-light">north_east</span>
                 </div>
 
-                {/* Text overlay (bottom) */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-10 transition-transform duration-500 group-hover:-translate-y-1">
+                {/* Text overlay (bottom) - pointer-events-none */}
+                <div className="absolute bottom-0 left-0 right-0 p-6 z-10 transition-transform duration-500 group-hover:-translate-y-1 pointer-events-none">
                     <div className="flex items-end justify-between gap-4">
                         <div className="min-w-0">
                             <p className="text-[10px] uppercase tracking-[0.25em] text-white/70 font-medium mb-2">
@@ -105,7 +126,6 @@ export default function ProjectsClient() {
 
     return (
         <div className="bg-white min-h-screen">
-            {/* Original Hero Component */}
             <Hero
                 title={hero.title}
                 subtitle={hero.subtitle}
@@ -138,7 +158,7 @@ export default function ProjectsClient() {
                         </p>
                     </motion.div>
 
-                    {/* Filters Section - Right Aligned & Vertically Stacked */}
+                    {/* Filters Section */}
                     <motion.div
                         variants={fadeUp}
                         initial="hidden"
@@ -146,8 +166,6 @@ export default function ProjectsClient() {
                         viewport={{ once: true }}
                         className="flex flex-col items-start lg:items-end gap-1 py-10"
                     >
-                        {/* 1. Category Filter (Top Row) */}
-                        {/* CHANGED: Added py-4 and px-2 to give the active button shadow/scale room so it doesn't get clipped */}
                         <div className="flex gap-4 overflow-x-auto w-full lg:w-auto py-4 px-2 -mx-2 scrollbar-none" style={{ scrollbarWidth: "none" }}>
                             {CATEGORIES.map((cat) => (
                                 <button
@@ -166,8 +184,6 @@ export default function ProjectsClient() {
                             ))}
                         </div>
 
-                        {/* 2. Status Segmented Control (Bottom Row) */}
-                        {/* CHANGED: Wrapped the inner control in a slightly padded div so hover scales don't clip here either */}
                         <div className="flex overflow-x-auto w-full lg:w-auto py-2 px-2 -mx-2 scrollbar-none" style={{ scrollbarWidth: "none" }}>
                             <div className="flex bg-slate-50 border border-slate-200 p-1.5 shrink-0 rounded-full shadow-inner max-w-full">
                                 {(["all", "completed", "ongoing"] as const).map((s) => {
