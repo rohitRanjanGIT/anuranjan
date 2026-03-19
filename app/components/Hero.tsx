@@ -33,7 +33,8 @@ function buildSlides(backgroundImage: string): Slide[] {
         { type: "hero", image: backgroundImage },
         ...gallery.map((g) => ({
             type: "project" as const,
-            image: g.image,
+            image: g.src,
+            title: g.title,
             category: g.category,
         })),
     ];

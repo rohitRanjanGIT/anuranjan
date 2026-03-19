@@ -460,12 +460,54 @@ export const history: HistoryItem[] = [
 ];
 
 export const gallery: GalleryItem[] = [
-  { id: 1, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA8xU9AbMloXbzR2PuV4o998pjAjl84tN8mrr4IttSkVZcBtuPQLJQfJK1Tr76o-7GaCELjMEdZz89dzRN8L7wU37sNkqrImm8Sm1o4G6s3f26qbhKmttKJ7983XSZ1RYKBTDMbsEGxDQKmvw07yZA6uODH-5yThpen_oL1SP9y6oNf8RmE7IMW0k5v79nBKCFOpOHzkVNd9bdCv7079C-jDFQ3Hyo6q-szu9AxuE1fjqJWGtMTj_sKGh3yheYb98Z1QmMZeoayMfdb", category: "Construction" },
-  { id: 2, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA2y0k_xBQKkrn3o9gUO8ggpjGEmPYlARFX5st2lgx2dGPG3vRkU0i9vsJmX0Y9bcSXLs8mMdXAy1wljrgRZT-4o1uSdj60cLq4qTawiPMaU3ArdIU0pbTv3h7VM66Urpl0D1P4nXEVqOIzaT-hVRIYz7iVTdSoEPWvHiYCBXc0VCwb57ND4rl2CoVIeIFJNjv72JnSFnORI6r9jY3l3i8FNY_R10b9Ivth2Y6UV0YFA67WSJQYP7tDMZMvfYJAlvfas5ikwUdhixfq", category: "Design" },
-  { id: 3, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBrt6ecFPhx3KgvYYBTZggjRaaVfWIfMFET6jmOUFb7rNVzLa_lT5ar04_whoCO4rXJFD2I-beeIde2x3UW7nJPU13Fw7bvZJ14nXOR6UKJNHJ3jfAzr4FJv1VoP5yinmBUnccIrkNOgoD9s_GBhzPseW23WWPRIF-kEUOIE8fvG8DLdyrDll2UPY1ZJlwNWL-LvLnbODDpWElKEte_7d3HOgquPVR5l4U_jDIkhCOAUNz1BRP5Uyu16s2fC42zAsXdNkwdcy22n2UA", category: "Commercial" },
-  { id: 4, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvzrXxqpQ8_TDyMsJT4exjCTprsNAlYlS_IXXP-ffXi75jWbrT1h2albO2SCmJyoh_ZzLEaE64TT_w4k3X3BhmeEd-QjkuuKY-CJ0rP5LbJv-AtA7PZjN5SnYP60QU5GJ3B69dndAOPmtvV7GcQLc8EXhtYr10HfKnJK1DX98RHB1gwlLsgdh5r3t4jyQTtOf2zWUCB17xN1iaZAkcGsfwU0yQHDzXlKSkVjBOSbceoylVDODq2iNX7gPf6nbEvN0UkZ_MZ8ektIkK", category: "Residential" },
-  { id: 5, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqNDgwCldCXF5u-JyNAKrYeAeI6-ROHh-ByjyL7dgRyDkqw5vwUMwK9uRNKDtsWsjIpo0Ug14k4UTRESxHpDIXigvnOcEDgvUJAwoeWYXcXYHs9S1SwWYDZn7lzk2wked5CuOlBIEWI2nfRgxvw4f4ss5AV4OpjdUEMbNv063PGsGY7cEioAH8UdG1o6EAheeNxT1cjFE6muZzfwxRI4wM6uh-uBpO0qJKZEnPvIz7w30ZpMB3eitNk88xfIkxVU4vtb0VQwyEx-s1", category: "Interior" },
-  { id: 6, image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBpLKKarMBFmYQuJXVVzIxlf4jHZwjuBmUWnhuJ6Whw1YDuD9eCGvp0jyeqyyVMGe_qwCoXtuJzTEBjIOo0hpWnr9qWmCQNAxdkZuv3ViT8n-DYw_34TE8h01AnkPoAb0-hri3qP_ll4_e2uPVx6LT9zNN1eJju4Yq7oWmdiX9OYvcSKBcZQgt12s9PKTWuEMl8YRntB0-u3Dyf-SYZeVkL1PtHpw_hwWvlASkyb51Q2fMZpHou7xHH1-x-b2ukHu6EtopRU4PKmmxK", category: "Industrial" }
+  { 
+    id: 1, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuA8xU9AbMloXbzR2PuV4o998pjAjl84tN8mrr4IttSkVZcBtuPQLJQfJK1Tr76o-7GaCELjMEdZz89dzRN8L7wU37sNkqrImm8Sm1o4G6s3f26qbhKmttKJ7983XSZ1RYKBTDMbsEGxDQKmvw07yZA6uODH-5yThpen_oL1SP9y6oNf8RmE7IMW0k5v79nBKCFOpOHzkVNd9bdCv7079C-jDFQ3Hyo6q-szu9AxuE1fjqJWGtMTj_sKGh3yheYb98Z1QmMZeoayMfdb", 
+    width: 1920, 
+    height: 1280, 
+    category: "Construction", 
+    title: "Foundation Works" 
+  },
+  { 
+    id: 2, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuA2y0k_xBQKkrn3o9gUO8ggpjGEmPYlARFX5st2lgx2dGPG3vRkU0i9vsJmX0Y9bcSXLs8mMdXAy1wljrgRZT-4o1uSdj60cLq4qTawiPMaU3ArdIU0pbTv3h7VM66Urpl0D1P4nXEVqOIzaT-hVRIYz7iVTdSoEPWvHiYCBXc0VCwb57ND4rl2CoVIeIFJNjv72JnSFnORI6r9jY3l3i8FNY_R10b9Ivth2Y6UV0YFA67WSJQYP7tDMZMvfYJAlvfas5ikwUdhixfq", 
+    width: 1080, 
+    height: 1350, 
+    category: "Design", 
+    title: "Architectural Blueprint" 
+  },
+  { 
+    id: 3, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBrt6ecFPhx3KgvYYBTZggjRaaVfWIfMFET6jmOUFb7rNVzLa_lT5ar04_whoCO4rXJFD2I-beeIde2x3UW7nJPU13Fw7bvZJ14nXOR6UKJNHJ3jfAzr4FJv1VoP5yinmBUnccIrkNOgoD9s_GBhzPseW23WWPRIF-kEUOIE8fvG8DLdyrDll2UPY1ZJlwNWL-LvLnbODDpWElKEte_7d3HOgquPVR5l4U_jDIkhCOAUNz1BRP5Uyu16s2fC42zAsXdNkwdcy22n2UA", 
+    width: 1920, 
+    height: 1280, 
+    category: "Commercial", 
+    title: "Modern Office Lobby" 
+  },
+  { 
+    id: 4, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDvzrXxqpQ8_TDyMsJT4exjCTprsNAlYlS_IXXP-ffXi75jWbrT1h2albO2SCmJyoh_ZzLEaE64TT_w4k3X3BhmeEd-QjkuuKY-CJ0rP5LbJv-AtA7PZjN5SnYP60QU5GJ3B69dndAOPmtvV7GcQLc8EXhtYr10HfKnJK1DX98RHB1gwlLsgdh5r3t4jyQTtOf2zWUCB17xN1iaZAkcGsfwU0yQHDzXlKSkVjBOSbceoylVDODq2iNX7gPf6nbEvN0UkZ_MZ8ektIkK", 
+    width: 1080, 
+    height: 1080, 
+    category: "Residential", 
+    title: "Luxury Apartment Complex" 
+  },
+  { 
+    id: 5, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqNDgwCldCXF5u-JyNAKrYeAeI6-ROHh-ByjyL7dgRyDkqw5vwUMwK9uRNKDtsWsjIpo0Ug14k4UTRESxHpDIXigvnOcEDgvUJAwoeWYXcXYHs9S1SwWYDZn7lzk2wked5CuOlBIEWI2nfRgxvw4f4ss5AV4OpjdUEMbNv063PGsGY7cEioAH8UdG1o6EAheeNxT1cjFE6muZzfwxRI4wM6uh-uBpO0qJKZEnPvIz7w30ZpMB3eitNk88xfIkxVU4vtb0VQwyEx-s1", 
+    width: 1080, 
+    height: 1350, 
+    category: "Interior", 
+    title: "Contemporary Living Space" 
+  },
+  { 
+    id: 6, 
+    src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBpLKKarMBFmYQuJXVVzIxlf4jHZwjuBmUWnhuJ6Whw1YDuD9eCGvp0jyeqyyVMGe_qwCoXtuJzTEBjIOo0hpWnr9qWmCQNAxdkZuv3ViT8n-DYw_34TE8h01AnkPoAb0-hri3qP_ll4_e2uPVx6LT9zNN1eJju4Yq7oWmdiX9OYvcSKBcZQgt12s9PKTWuEMl8YRntB0-u3Dyf-SYZeVkL1PtHpw_hwWvlASkyb51Q2fMZpHou7xHH1-x-b2ukHu6EtopRU4PKmmxK", 
+    width: 1920, 
+    height: 1280, 
+    category: "Industrial", 
+    title: "Smart Warehouse Facility" 
+  }
 ];
 
 export const careers: Career[] = [

@@ -48,8 +48,11 @@ export interface TeamMember {
 
 export interface GalleryItem {
     id: number;
-    image: string;
+    src: string;
+    width: number;
+    height: number;
     category: string;
+    title: string;
 }
 
 export interface Career {
