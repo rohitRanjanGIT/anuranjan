@@ -1,0 +1,98 @@
+// Prisma Schema — Anuranjan Infratech
+// Only dynamic content that needs to be managed from the backend.
+// Static content (nav, services, values, team, history, footer, site config)
+// remains in lib/data/data.ts.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Categories (shared across projects & images) ───────────
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique // e.g. "Commercial", "Residential", "Interior"
+  projects  Project[]
+  images    Image[]
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@map("categories")
+}
+
+// ─── Images (central image store) ───────────────────────────
+model Image {
+  id           Int       @id @default(autoincrement())
+  src          String
+  width        Int
+  height       Int
+  title        String
+  category     Category  @relation(fields: [categoryId], references: [id])
+  categoryId   Int       @map("category_id")
+  projects     Project[] // many-to-many: an image can belong to multiple projects
+  heroCarousel Boolean   @default(false) @map("hero_carousel") // true = show in homepage hero carousel (max 6)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("images")
+}
+
+// ─── Projects ───────────────────────────────────────────────
+model Project {
+  id                Int           @id @default(autoincrement())
+  title             String
+  description       String?
+  category          Category      @relation(fields: [categoryId], references: [id])
+  categoryId        Int           @map("category_id")
+  type              String
+  image             String        // main thumbnail image
+  images            Image[]       // many-to-many: gallery images for detail view
+  location          String?
+  status            ProjectStatus @default(COMPLETED)
+  year              String?
+  homepagePortfolio Boolean       @default(false) @map("homepage_portfolio")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  ONGOING
+  COMPLETED
+
+  @@map("project_status")
+}
+
+// ─── Testimonials ───────────────────────────────────────────
+model Testimonial {
+  id        Int      @id @default(autoincrement())
+  name      String        // reviewer name
+  role      String        // e.g. "CEO, LogiMove India"
+  content   String        // the review text
+  avatar    String        // profile photo URL
+  rating    Int?          // star rating (1-5), useful for Google Reviews
+  source    String?       // e.g. "google", "manual"
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("testimonials")
+}
+
+// ─── Careers ────────────────────────────────────────────────
+model Career {
+  id         Int      @id @default(autoincrement())
+  title      String
+  department String
+  location   String
+  type       String
+  experience String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@map("careers")
+}
+
