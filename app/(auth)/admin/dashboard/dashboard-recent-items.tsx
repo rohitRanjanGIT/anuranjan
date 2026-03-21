@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardDescription,
@@ -17,7 +18,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { CheckmarkCircle01Icon, Loading03Icon } from "@hugeicons/core-free-icons"
+import { CheckmarkCircle01Icon, Loading03Icon, Edit02Icon, Delete02Icon } from "@hugeicons/core-free-icons"
 
 interface ProjectItem {
   id: number
@@ -64,6 +65,7 @@ export function DashboardRecentItems() {
                 <TableHead>Status</TableHead>
                 <TableHead>Year</TableHead>
                 <TableHead>Featured</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -104,6 +106,28 @@ export function DashboardRecentItems() {
                       ) : (
                         <span className="text-muted-foreground">—</span>
                       )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end gap-2">
+                        <a href="/admin/dashboard/projects">
+                          <Button variant="ghost" size="icon" title="Edit in Projects section">
+                            <HugeiconsIcon icon={Edit02Icon} className="size-4" />
+                          </Button>
+                        </a>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          onClick={async () => {
+                            if (!confirm("Are you sure you want to delete this project?")) return
+                            await fetch(`/api/projects/${project.id}`, { method: "DELETE" })
+                            window.location.reload()
+                          }}
+                          title="Delete project"
+                        >
+                          <HugeiconsIcon icon={Delete02Icon} className="size-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))

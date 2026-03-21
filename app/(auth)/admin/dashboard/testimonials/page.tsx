@@ -47,6 +47,79 @@ const emptyTestimonial = {
   source: "manual",
 }
 
+const TestimonialForm = ({
+  data,
+  onChange,
+}: {
+  data: typeof emptyTestimonial | Testimonial
+  onChange: (key: string, value: any) => void
+}) => (
+  <div className="grid gap-4 py-4">
+    <div className="grid gap-2">
+      <Label htmlFor="name">Reviewer Name</Label>
+      <Input
+        id="name"
+        value={data.name}
+        onChange={(e) => onChange("name", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="role">Role / Company</Label>
+      <Input
+        id="role"
+        value={data.role}
+        onChange={(e) => onChange("role", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="avatar">Avatar URL</Label>
+      <Input
+        id="avatar"
+        value={data.avatar}
+        onChange={(e) => onChange("avatar", e.target.value)}
+        placeholder="https://..."
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="content">Review Content</Label>
+      <Textarea
+        id="content"
+        value={data.content}
+        onChange={(e) => onChange("content", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-2">
+        <Label htmlFor="rating">Rating (1-5)</Label>
+        <Input
+          id="rating"
+          type="number"
+          min={1}
+          max={5}
+          value={data.rating || 5}
+          onChange={(e) => onChange("rating", Number(e.target.value))}
+        />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="source">Source</Label>
+        <Select value={data.source || "manual"} onValueChange={(val) => onChange("source", val)}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="manual">Manual</SelectItem>
+            <SelectItem value="google">Google Reviews</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+    </div>
+  </div>
+)
+
 export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
@@ -97,79 +170,6 @@ export default function TestimonialsPage() {
     await fetch(`/api/testimonials/${id}`, { method: "DELETE" })
     fetchTestimonials()
   }
-
-  const TestimonialForm = ({
-    data,
-    onChange,
-  }: {
-    data: typeof emptyTestimonial | Testimonial
-    onChange: (key: string, value: any) => void
-  }) => (
-    <div className="grid gap-4 py-4">
-      <div className="grid gap-2">
-        <Label htmlFor="name">Reviewer Name</Label>
-        <Input
-          id="name"
-          value={data.name}
-          onChange={(e) => onChange("name", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="role">Role / Company</Label>
-        <Input
-          id="role"
-          value={data.role}
-          onChange={(e) => onChange("role", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="avatar">Avatar URL</Label>
-        <Input
-          id="avatar"
-          value={data.avatar}
-          onChange={(e) => onChange("avatar", e.target.value)}
-          placeholder="https://..."
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="content">Review Content</Label>
-        <Textarea
-          id="content"
-          value={data.content}
-          onChange={(e) => onChange("content", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="rating">Rating (1-5)</Label>
-          <Input
-            id="rating"
-            type="number"
-            min={1}
-            max={5}
-            value={data.rating || 5}
-            onChange={(e) => onChange("rating", Number(e.target.value))}
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label htmlFor="source">Source</Label>
-          <Select value={data.source || "manual"} onValueChange={(val) => onChange("source", val)}>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="manual">Manual</SelectItem>
-              <SelectItem value="google">Google Reviews</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-    </div>
-  )
 
   return (
     <SidebarProvider

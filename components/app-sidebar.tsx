@@ -18,7 +18,7 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import {
   DashboardSquare01Icon,
   Folder01Icon,
-  Camera01Icon,
+  Layers01Icon,
   Settings05Icon,
   HelpCircleIcon,
   Image01Icon,
@@ -60,7 +60,7 @@ const data = {
       title: "Categories",
       url: "/admin/dashboard/categories",
       icon: (
-        <HugeiconsIcon icon={Camera01Icon} strokeWidth={2} />
+        <HugeiconsIcon icon={Layers01Icon} strokeWidth={2} />
       ),
     },
     {

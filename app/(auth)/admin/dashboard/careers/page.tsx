@@ -43,6 +43,64 @@ const emptyCareer = {
   experience: "",
 }
 
+const CareerForm = ({
+  data,
+  onChange,
+}: {
+  data: typeof emptyCareer | Career
+  onChange: (key: string, value: any) => void
+}) => (
+  <div className="grid gap-4 py-4 sm:grid-cols-2">
+    <div className="grid gap-2 sm:col-span-2">
+      <Label htmlFor="title">Job Title</Label>
+      <Input
+        id="title"
+        value={data.title}
+        onChange={(e) => onChange("title", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="department">Department</Label>
+      <Input
+        id="department"
+        value={data.department}
+        onChange={(e) => onChange("department", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="location">Location</Label>
+      <Input
+        id="location"
+        value={data.location}
+        onChange={(e) => onChange("location", e.target.value)}
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="type">Employment Type</Label>
+      <Input
+        id="type"
+        value={data.type}
+        onChange={(e) => onChange("type", e.target.value)}
+        placeholder="e.g. Full-Time, Contract"
+        required
+      />
+    </div>
+    <div className="grid gap-2">
+      <Label htmlFor="experience">Experience Required</Label>
+      <Input
+        id="experience"
+        value={data.experience}
+        onChange={(e) => onChange("experience", e.target.value)}
+        placeholder="e.g. 2-5 Years"
+        required
+      />
+    </div>
+  </div>
+)
+
 export default function CareersPage() {
   const [careers, setCareers] = useState<Career[]>([])
   const [loading, setLoading] = useState(true)
@@ -93,64 +151,6 @@ export default function CareersPage() {
     await fetch(`/api/careers/${id}`, { method: "DELETE" })
     fetchCareers()
   }
-
-  const CareerForm = ({
-    data,
-    onChange,
-  }: {
-    data: typeof emptyCareer | Career
-    onChange: (key: string, value: any) => void
-  }) => (
-    <div className="grid gap-4 py-4 sm:grid-cols-2">
-      <div className="grid gap-2 sm:col-span-2">
-        <Label htmlFor="title">Job Title</Label>
-        <Input
-          id="title"
-          value={data.title}
-          onChange={(e) => onChange("title", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="department">Department</Label>
-        <Input
-          id="department"
-          value={data.department}
-          onChange={(e) => onChange("department", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="location">Location</Label>
-        <Input
-          id="location"
-          value={data.location}
-          onChange={(e) => onChange("location", e.target.value)}
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="type">Employment Type</Label>
-        <Input
-          id="type"
-          value={data.type}
-          onChange={(e) => onChange("type", e.target.value)}
-          placeholder="e.g. Full-Time, Contract"
-          required
-        />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="experience">Experience Required</Label>
-        <Input
-          id="experience"
-          value={data.experience}
-          onChange={(e) => onChange("experience", e.target.value)}
-          placeholder="e.g. 2-5 Years"
-          required
-        />
-      </div>
-    </div>
-  )
 
   return (
     <SidebarProvider
