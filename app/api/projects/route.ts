@@ -1,13 +1,51 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/projects — list all projects (newest first)
-export async function GET() {
+// GET /api/projects — list projects with optional pagination
+export async function GET(request: Request) {
   try {
-    const projects = await prisma.project.findMany({
+    const { searchParams } = new URL(request.url);
+    const page = searchParams.get("page");
+    const limit = searchParams.get("limit");
+    const categoryId = searchParams.get("categoryId");
+    const status = searchParams.get("status");
+    const homepagePortfolio = searchParams.get("homepagePortfolio");
+
+    const where: any = {};
+    if (categoryId && categoryId !== "ALL") where.categoryId = Number(categoryId);
+    if (status && status !== "ALL") where.status = status;
+    if (homepagePortfolio === "true") where.homepagePortfolio = true;
+
+    const queryOptions: any = {
+      where,
       include: { category: true, images: true },
       orderBy: { createdAt: "desc" },
-    });
+    };
+
+    if (page && limit) {
+      const pageNum = Math.max(1, parseInt(page));
+      const limitNum = Math.max(1, parseInt(limit));
+      queryOptions.skip = (pageNum - 1) * limitNum;
+      queryOptions.take = limitNum;
+
+      const [data, total] = await Promise.all([
+        prisma.project.findMany(queryOptions),
+        prisma.project.count({ where })
+      ]);
+
+      return NextResponse.json({
+        data,
+        meta: {
+          total,
+          page: pageNum,
+          limit: limitNum,
+          totalPages: Math.ceil(total / limitNum),
+        }
+      });
+    }
+
+    // Default return all for backwards compatibility
+    const projects = await prisma.project.findMany(queryOptions);
     return NextResponse.json(projects);
   } catch (error) {
     return NextResponse.json(
