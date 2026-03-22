@@ -48,8 +48,8 @@ model Project {
   category          Category      @relation(fields: [categoryId], references: [id])
   categoryId        Int           @map("category_id")
   type              String
-  image             String        // main thumbnail image
-  images            Image[]       // many-to-many: gallery images for detail view
+  image             String // main thumbnail image
+  images            Image[] // many-to-many: gallery images for detail view
   location          String?
   status            ProjectStatus @default(COMPLETED)
   year              String?
@@ -70,12 +70,12 @@ enum ProjectStatus {
 // ─── Testimonials ───────────────────────────────────────────
 model Testimonial {
   id        Int      @id @default(autoincrement())
-  name      String        // reviewer name
-  role      String        // e.g. "CEO, LogiMove India"
-  content   String        // the review text
-  avatar    String        // profile photo URL
-  rating    Int?          // star rating (1-5), useful for Google Reviews
-  source    String?       // e.g. "google", "manual"
+  name      String // reviewer name
+  role      String // e.g. "CEO, LogiMove India"
+  content   String // the review text
+  avatar    String // profile photo URL
+  rating    Int? // star rating (1-5), useful for Google Reviews
+  source    String? // e.g. "google", "manual"
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -96,3 +96,26 @@ model Career {
   @@map("careers")
 }
 
+model admin {
+  id          Int      @id @default(autoincrement())
+  username    String   @unique
+  password    String 
+  jwtToken    String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  @@map("admin")
+}
+model siteconfig {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  email       String
+  addresslink String
+  address1    String
+  address2    String
+  city        String
+  state       String
+  phone       String
+  mobile      String
+  @@map("siteconfig")
+}

@@ -1,19 +1,25 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { verifyToken } from '@/lib/auth'
 
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const url = req.nextUrl
   
   if (url.pathname.startsWith('/admin')) {
     const token = req.cookies.get('adminAuthToken')?.value
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin'
-    const adminPassword = process.env.ADMIN_PASSWORD || 'password123'
     
-    // Validate session cookie locally
-    const expectedToken = Buffer.from(`${adminUsername}:${adminPassword}`).toString('base64')
-    
-    if (token === expectedToken) {
-      return NextResponse.next()
+    if (!token) {
+      const loginUrl = new URL('/login', req.url)
+      return NextResponse.redirect(loginUrl)
+    }
+
+    try {
+      const payload = await verifyToken(token)
+      if (payload) {
+        return NextResponse.next()
+      }
+    } catch (err) {
+      // In case of any error with verification
     }
     
     // Redirect securely to custom login page if invalid or missing token
