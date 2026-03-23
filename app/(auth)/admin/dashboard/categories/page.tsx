@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Edit02Icon, Delete02Icon, PlusSignIcon } from "@hugeicons/core-free-icons"
+import { Edit02Icon, Delete02Icon, PlusSignIcon, ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 
 interface Category {
   id: number
@@ -36,6 +36,11 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const limit = 10
+
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [addName, setAddName] = useState("")
 
@@ -44,15 +49,21 @@ export default function CategoriesPage() {
 
   const fetchCategories = async () => {
     setLoading(true)
-    const res = await fetch("/api/categories")
+    const res = await fetch(`/api/categories?page=${page}&limit=${limit}`)
     const data = await res.json()
-    setCategories(Array.isArray(data) ? data : [])
+    if (data.meta) {
+      setCategories(data.data)
+      setTotalPages(data.meta.totalPages || 1)
+    } else {
+      setCategories(Array.isArray(data) ? data : [])
+      setTotalPages(1)
+    }
     setLoading(false)
   }
 
   useEffect(() => {
     fetchCategories()
-  }, [])
+  }, [page])
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -82,7 +93,8 @@ export default function CategoriesPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this category?")) return
     await fetch(`/api/categories/${id}`, { method: "DELETE" })
-    fetchCategories()
+    if (categories.length === 1 && page > 1) setPage(page - 1)
+    else fetchCategories()
   }
 
   return (
@@ -136,7 +148,7 @@ export default function CategoriesPage() {
             </Dialog>
           </div>
 
-          <div className="rounded-md border">
+          <div className="rounded-md border flex flex-col">
             <Table>
               <TableHeader className="bg-muted">
                 <TableRow>
@@ -194,6 +206,33 @@ export default function CategoriesPage() {
                 )}
               </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-end space-x-2 py-4 px-4 border-t mt-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                >
+                  <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4 mr-1" />
+                  Previous
+                </Button>
+                <div className="text-sm text-muted-foreground">
+                  Page {page} of {totalPages}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                >
+                  Next
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 ml-1" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <Dialog open={!!editCategory} onOpenChange={(open) => !open && setEditCategory(null)}>

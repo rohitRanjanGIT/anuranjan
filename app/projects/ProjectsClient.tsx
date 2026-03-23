@@ -1,35 +1,40 @@
 "use client";
 
-import { useState } from "react";
-import { projects, siteConfig } from "@/lib/data/data";
+import { useState, useEffect } from "react";
+import { siteConfig } from "@/lib/data/data";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerContainer, scaleUp } from "@/lib/animations";
 import Hero from "../components/Hero";
 
 // ─── Types & Config ────────────────────────────────────────────────────────────
 
-const CATEGORIES = [
-    { id: "All", label: "All Projects", icon: "grid_view" },
-    { id: "Commercial", label: "Commercial", icon: "business" },
-    { id: "Residential", label: "Residential", icon: "home_work" },
-    { id: "Villa", label: "Villa", icon: "villa" },
-    { id: "Interior", label: "Interior", icon: "chair" },
-    { id: "Industrial", label: "Industrial", icon: "factory" },
-];
+interface Category {
+    id: number
+    name: string
+}
 
-// ─── Project Card (Hover Gallery Integrated) ───────────────────────────────────
-
-// We extend your existing project type to optionally accept an `images` array
-type ProjectType = (typeof projects)[0] & { images?: string[] };
+interface ProjectType {
+    id: number
+    title: string
+    description: string | null
+    category: { name: string }
+    categoryId: number
+    type: string
+    image: string
+    images: { id: number; src: string }[]
+    location: string | null
+    status: string
+    year: string | null
+    homepagePortfolio: boolean
+}
 
 function ProjectCard({ project }: { project: ProjectType }) {
-    const isOngoing = project.status === "ongoing";
+    const isOngoing = project.status === "ONGOING";
 
-    // Grab up to 4 images for the gallery. If 'images' doesn't exist in your data, 
-    // it safely falls back to just showing the main fullImage.
+    // Grab up to 4 images for the gallery, falling back to the main image
     const galleryImages = project.images && project.images.length > 0
-        ? project.images.slice(0, 4)
-        : [project.fullImage];
+        ? project.images.slice(0, 4).map((img) => img.src)
+        : [project.image];
 
     return (
         <motion.article
@@ -67,7 +72,7 @@ function ProjectCard({ project }: { project: ProjectType }) {
                 {/* Badges - pointer-events-none */}
                 <div className="absolute top-5 left-5 flex items-center gap-2 z-10 pointer-events-none">
                     <span className="bg-white/95 backdrop-blur-md text-secondary text-[9px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 shadow-sm rounded-full">
-                        {project.category}
+                        {project.category.name}
                     </span>
                     {isOngoing && (
                         <span className="bg-primary text-white text-[9px] font-bold uppercase tracking-[0.2em] px-4 py-1.5 flex items-center gap-1.5 shadow-sm rounded-full">
@@ -108,21 +113,42 @@ function ProjectCard({ project }: { project: ProjectType }) {
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function ProjectsClient() {
+    const [projects, setProjects] = useState<ProjectType[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState("All");
     const [activeStatus, setActiveStatus] = useState<"all" | "completed" | "ongoing">("all");
     const { hero, intro } = siteConfig.projectsStrings;
 
+    useEffect(() => {
+        Promise.all([
+            fetch("/api/projects").then((r) => r.json()),
+            fetch("/api/categories").then((r) => r.json()),
+        ])
+            .then(([projectsData, categoriesData]) => {
+                setProjects(Array.isArray(projectsData) ? projectsData : []);
+                setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
     const filtered = projects.filter((p) => {
-        const catMatch = activeCategory === "All" || p.category === activeCategory;
+        const catMatch = activeCategory === "All" || p.category.name === activeCategory;
         const statusMatch =
             activeStatus === "all" ||
-            (activeStatus === "ongoing" && p.status === "ongoing") ||
-            (activeStatus === "completed" && p.status !== "ongoing");
+            (activeStatus === "ongoing" && p.status === "ONGOING") ||
+            (activeStatus === "completed" && p.status === "COMPLETED");
         return catMatch && statusMatch;
     });
 
-    const ongoingCount = projects.filter((p) => p.status === "ongoing").length;
-    const completedCount = projects.filter((p) => p.status !== "ongoing").length;
+    const ongoingCount = projects.filter((p) => p.status === "ONGOING").length;
+    const completedCount = projects.filter((p) => p.status === "COMPLETED").length;
+
+    const CATEGORIES = [
+        { id: "All", label: "All Projects", icon: "grid_view" },
+        ...categories.map((c) => ({ id: c.name, label: c.name, icon: "category" })),
+    ];
 
     return (
         <div className="bg-white min-h-screen">
@@ -218,6 +244,11 @@ export default function ProjectsClient() {
                     </motion.div>
 
                     {/* Uniform Grid */}
+                    {loading ? (
+                        <div className="flex justify-center py-32">
+                            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    ) : (
                     <motion.div
                         layout
                         variants={staggerContainer}
@@ -250,6 +281,7 @@ export default function ProjectsClient() {
                             )}
                         </AnimatePresence>
                     </motion.div>
+                    )}
 
                 </div>
             </section>

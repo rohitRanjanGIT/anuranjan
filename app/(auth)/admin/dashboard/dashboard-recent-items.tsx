@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/table"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { CheckmarkCircle01Icon, Loading03Icon, Edit02Icon, Delete02Icon } from "@hugeicons/core-free-icons"
+import { useRefresh } from "@/components/refresh-context"
 
 interface ProjectItem {
   id: number
@@ -33,8 +34,10 @@ interface ProjectItem {
 export function DashboardRecentItems() {
   const [projects, setProjects] = useState<ProjectItem[]>([])
   const [loading, setLoading] = useState(true)
+  const { refreshKey } = useRefresh()
 
   useEffect(() => {
+    setLoading(true)
     fetch("/api/projects")
       .then((res) => res.json())
       .then((data) => {
@@ -42,7 +45,7 @@ export function DashboardRecentItems() {
         setLoading(false)
       })
       .catch(() => setLoading(false))
-  }, [])
+  }, [refreshKey])
 
   return (
     <div className="px-4 lg:px-6">

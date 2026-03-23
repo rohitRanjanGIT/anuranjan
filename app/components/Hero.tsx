@@ -3,7 +3,6 @@
 import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 import { useState, useEffect, useCallback } from "react";
-import { gallery } from "@/lib/data/data";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -24,20 +23,6 @@ interface Slide {
     label?: string;
     title?: string;
     category?: string;
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function buildSlides(backgroundImage: string): Slide[] {
-    return [
-        { type: "hero", image: backgroundImage },
-        ...gallery.map((g) => ({
-            type: "project" as const,
-            image: g.src,
-            title: g.title,
-            category: g.category,
-        })),
-    ];
 }
 
 const bgVariants: Variants = {
@@ -94,9 +79,29 @@ function CarouselHero({
     primaryButtonText,
     secondaryButtonText,
 }: HeroProps) {
-    const slides = buildSlides(backgroundImage);
+    const [slides, setSlides] = useState<Slide[]>([{ type: "hero", image: backgroundImage }]);
     const [current, setCurrent] = useState(0);
     const [direction, setDirection] = useState<1 | -1>(1);
+
+    useEffect(() => {
+        fetch("/api/images?hero=true")
+            .then((res) => res.json())
+            .then((data) => {
+                const imgs = Array.isArray(data) ? data : [];
+                if (imgs.length > 0) {
+                    setSlides([
+                        { type: "hero", image: backgroundImage },
+                        ...imgs.map((img: any) => ({
+                            type: "project" as const,
+                            image: img.src,
+                            title: img.title,
+                            category: img.category?.name,
+                        })),
+                    ]);
+                }
+            })
+            .catch(() => {});
+    }, [backgroundImage]);
 
     const goTo = useCallback((index: number, dir: 1 | -1 = 1) => {
         setDirection(dir);
@@ -214,18 +219,6 @@ function CarouselHero({
                                     {slide.label}
                                 </p>
                             )}
-
-                            <div className="pt-1">
-                                <a
-                                    href="/projects"
-                                    className="group inline-flex items-center gap-2.5 bg-primary hover:bg-white hover:text-secondary text-white px-8 py-4 rounded-full font-semibold text-sm tracking-wide transition-all duration-300 shadow-lg active:scale-[0.97]"
-                                >
-                                    View Project
-                                    <span className="material-symbols-outlined text-base transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
-                                        north_east
-                                    </span>
-                                </a>
-                            </div>
                         </motion.div>
                     )}
                 </AnimatePresence>

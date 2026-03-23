@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Hero from "../components/Hero";
-import { gallery, siteConfig } from "@/lib/data/data";
+import { useState, useMemo, useEffect } from "react";
+import { siteConfig } from "@/lib/data/data";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 
@@ -11,28 +10,46 @@ import "react-photo-album/masonry.css";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
-const ITEMS_PER_PAGE = 12;
-
-function getCategories(items: typeof gallery) {
-    const cats = Array.from(new Set(items.map((item) => item.category)));
-    return ["All", ...cats];
+interface GalleryImage {
+    id: number;
+    src: string;
+    width: number;
+    height: number;
+    title: string;
+    category: { name: string };
 }
 
+const ITEMS_PER_PAGE = 12;
+
 export default function GalleryClient() {
-    const { hero } = siteConfig.galleryStrings;
+    const [images, setImages] = useState<GalleryImage[]>([]);
+    const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState("All");
     const [lightboxIndex, setLightboxIndex] = useState(-1);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const categories = useMemo(() => getCategories(gallery), []);
+    useEffect(() => {
+        fetch("/api/images")
+            .then((res) => res.json())
+            .then((data) => {
+                setImages(Array.isArray(data) ? data : []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
+    const categories = useMemo(() => {
+        const cats = Array.from(new Set(images.map((img) => img.category?.name).filter(Boolean)));
+        return ["All", ...cats];
+    }, [images]);
 
     const filtered = useMemo(() => {
-        setCurrentPage(1); // reset to page 1 on category change
+        setCurrentPage(1);
         return activeCategory === "All"
-            ? gallery
-            : gallery.filter((item) => item.category === activeCategory);
+            ? images
+            : images.filter((img) => img.category?.name === activeCategory);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [activeCategory]);
+    }, [activeCategory, images]);
 
     const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
 
@@ -48,10 +65,7 @@ export default function GalleryClient() {
         alt: item.title,
     }));
 
-    // Lightbox slides should cover all filtered photos so prev/next works across the full set
     const allSlides = filtered.map((item) => ({ src: item.src, alt: item.title }));
-
-    // The lightbox index must account for the current page offset
     const pageOffset = (currentPage - 1) * ITEMS_PER_PAGE;
 
     const handlePageChange = (page: number) => {
@@ -59,7 +73,6 @@ export default function GalleryClient() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // Build page number array with ellipsis: [1, "...", 4, 5, 6, "...", 12]
     const pageNumbers = useMemo(() => {
         if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
         const pages: (number | "...")[] = [1];
@@ -127,100 +140,109 @@ export default function GalleryClient() {
             {/* SECTION 2: PHOTO ALBUM */}
             <section className="pb-16">
                 <div className="max-w-[85rem] mx-auto px-6 sm:px-8 lg:px-12">
-                    {/* Results count */}
-                    <p className="text-sm text-secondary/40 mb-6">
-                        Showing{" "}
-                        <span className="font-medium text-secondary/60">
-                            {pageOffset + 1}–{Math.min(pageOffset + ITEMS_PER_PAGE, filtered.length)}
-                        </span>{" "}
-                        of <span className="font-medium text-secondary/60">{filtered.length}</span> photos
-                    </p>
+                    {loading ? (
+                        <div className="flex items-center justify-center py-24">
+                            <div className="text-secondary/40 text-lg">Loading gallery...</div>
+                        </div>
+                    ) : filtered.length === 0 ? (
+                        <div className="flex items-center justify-center py-24">
+                            <div className="text-secondary/40 text-lg">No images found.</div>
+                        </div>
+                    ) : (
+                        <>
+                            {/* Results count */}
+                            <p className="text-sm text-secondary/40 mb-6">
+                                Showing{" "}
+                                <span className="font-medium text-secondary/60">
+                                    {pageOffset + 1}–{Math.min(pageOffset + ITEMS_PER_PAGE, filtered.length)}
+                                </span>{" "}
+                                of <span className="font-medium text-secondary/60">{filtered.length}</span> photos
+                            </p>
 
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={`${activeCategory}-${currentPage}`}
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -8 }}
-                            transition={{ duration: 0.3 }}
-                        >
-                            <MasonryPhotoAlbum
-                                photos={photos}
-                                columns={(containerWidth) => {
-                                    if (containerWidth < 640) return 1;
-                                    if (containerWidth < 1024) return 2;
-                                    return 3;
-                                }}
-                                spacing={12}
-                                onClick={({ index }) => setLightboxIndex(pageOffset + index)}
-                                componentsProps={{
-                                    image: { 
-                                        className: "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                                    },
-                                    wrapper: { 
-                                        className: "overflow-hidden rounded-lg cursor-pointer group" 
-                                    }
-                                }}
-                            />
-                        </motion.div>
-                    </AnimatePresence>
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={`${activeCategory}-${currentPage}`}
+                                    initial={{ opacity: 0, y: 16 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -8 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <MasonryPhotoAlbum
+                                        photos={photos}
+                                        columns={(containerWidth) => {
+                                            if (containerWidth < 640) return 1;
+                                            if (containerWidth < 1024) return 2;
+                                            return 3;
+                                        }}
+                                        spacing={12}
+                                        onClick={({ index }) => setLightboxIndex(pageOffset + index)}
+                                        componentsProps={{
+                                            image: {
+                                                className: "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            },
+                                            wrapper: {
+                                                className: "overflow-hidden rounded-lg cursor-pointer group"
+                                            }
+                                        }}
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
 
-                    {/* PAGINATION */}
-                    {totalPages > 1 && (
-                        <motion.div
-                            variants={fadeUp}
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            className="flex items-center justify-center gap-1.5 mt-14"
-                        >
-                            {/* Prev */}
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-slate-200 text-secondary/60 hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none"
-                            >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-                                </svg>
-                                Prev
-                            </button>
-
-                            {/* Page numbers */}
-                            {pageNumbers.map((page, i) =>
-                                page === "..." ? (
-                                    <span
-                                        key={`ellipsis-${i}`}
-                                        className="w-9 h-9 flex items-center justify-center text-secondary/30 text-sm select-none"
-                                    >
-                                        ···
-                                    </span>
-                                ) : (
+                            {/* PAGINATION */}
+                            {totalPages > 1 && (
+                                <motion.div
+                                    variants={fadeUp}
+                                    initial="hidden"
+                                    whileInView="visible"
+                                    viewport={{ once: true }}
+                                    className="flex items-center justify-center gap-1.5 mt-14"
+                                >
                                     <button
-                                        key={page}
-                                        onClick={() => handlePageChange(page)}
-                                        className={`w-9 h-9 rounded-lg text-sm font-medium border transition-all duration-200 ${currentPage === page
-                                                ? "bg-primary text-white border-primary"
-                                                : "bg-white text-secondary/60 border-slate-200 hover:border-primary hover:text-primary"
-                                            }`}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-slate-200 text-secondary/60 hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none"
                                     >
-                                        {page}
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                                        </svg>
+                                        Prev
                                     </button>
-                                )
-                            )}
 
-                            {/* Next */}
-                            <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-slate-200 text-secondary/60 hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none"
-                            >
-                                Next
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                                </svg>
-                            </button>
-                        </motion.div>
+                                    {pageNumbers.map((page, i) =>
+                                        page === "..." ? (
+                                            <span
+                                                key={`ellipsis-${i}`}
+                                                className="w-9 h-9 flex items-center justify-center text-secondary/30 text-sm select-none"
+                                            >
+                                                ···
+                                            </span>
+                                        ) : (
+                                            <button
+                                                key={page}
+                                                onClick={() => handlePageChange(page)}
+                                                className={`w-9 h-9 rounded-lg text-sm font-medium border transition-all duration-200 ${currentPage === page
+                                                        ? "bg-primary text-white border-primary"
+                                                        : "bg-white text-secondary/60 border-slate-200 hover:border-primary hover:text-primary"
+                                                    }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        )
+                                    )}
+
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                        className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium border border-slate-200 text-secondary/60 hover:border-primary hover:text-primary transition-all duration-200 disabled:opacity-30 disabled:pointer-events-none"
+                                    >
+                                        Next
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </button>
+                                </motion.div>
+                            )}
+                        </>
                     )}
                 </div>
             </section>

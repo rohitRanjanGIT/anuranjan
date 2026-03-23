@@ -1,7 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { siteConfig, footerSections } from "@/lib/data/data";
+import { useSiteConfig } from "@/components/siteconfig-context";
 
 export default function Footer() {
+    const config = useSiteConfig();
+
+    const fullAddress = [config.address1, config.address2, config.city, config.state]
+        .filter(Boolean)
+        .join(", ");
+
     return (
         <footer className="pt-20 pb-10 bg-white text-secondary border-t border-slate-100">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
@@ -44,20 +53,36 @@ export default function Footer() {
                     <div>
                         <h5 className="text-lg font-bold mb-6 text-secondary italic">Contact Us</h5>
                         <ul className="space-y-6">
-                            <li className="flex items-start gap-3">
-                                <span className="material-symbols-outlined text-primary">location_on</span>
-                                <span className="text-sm text-secondary/60 font-medium leading-loose">
-                                    {siteConfig.contact.corporatePark}
-                                </span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-primary">call</span>
-                                <span className="text-sm text-secondary/60 font-bold">{siteConfig.contact.phoneAlt}</span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <span className="material-symbols-outlined text-primary">mail</span>
-                                <span className="text-sm text-secondary/60 font-bold">{siteConfig.contact.contactEmail}</span>
-                            </li>
+                            {fullAddress && (
+                                <li className="flex items-start gap-3">
+                                    <span className="material-symbols-outlined text-primary">location_on</span>
+                                    {config.addresslink ? (
+                                        <a href={config.addresslink} target="_blank" rel="noopener noreferrer" className="text-sm text-secondary/60 font-medium leading-loose hover:text-primary transition-colors">
+                                            {fullAddress}
+                                        </a>
+                                    ) : (
+                                        <span className="text-sm text-secondary/60 font-medium leading-loose">
+                                            {fullAddress}
+                                        </span>
+                                    )}
+                                </li>
+                            )}
+                            {config.phone && (
+                                <li className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">call</span>
+                                    <a href={`tel:${config.phone.replace(/\s/g, "")}`} className="text-sm text-secondary/60 font-bold hover:text-primary transition-colors">
+                                        {config.phone}
+                                    </a>
+                                </li>
+                            )}
+                            {config.email && (
+                                <li className="flex items-center gap-3">
+                                    <span className="material-symbols-outlined text-primary">mail</span>
+                                    <a href={`mailto:${config.email}`} className="text-sm text-secondary/60 font-bold hover:text-primary transition-colors">
+                                        {config.email}
+                                    </a>
+                                </li>
+                            )}
                         </ul>
                     </div>
                 </div>

@@ -10,7 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Folder01Icon, Image01Icon, MessageEdit01Icon, Briefcase01Icon } from "@hugeicons/core-free-icons"
+import { Folder01Icon, Image01Icon, MessageEdit01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { useRefresh } from "@/components/refresh-context"
 
 interface DashboardStats {
   totalProjects: number
@@ -22,17 +23,21 @@ interface DashboardStats {
   totalCareers: number
   totalCategories: number
   featuredProjects: number
+  totalEnquiries: number
+  unreadEnquiries: number
 }
 
 export function SectionCards() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
+  const { refreshKey } = useRefresh()
 
   useEffect(() => {
+    setStats(null)
     fetch("/api/dashboard/stats")
       .then((res) => res.json())
       .then(setStats)
       .catch(console.error)
-  }, [])
+  }, [refreshKey])
 
   if (!stats) {
     return (
@@ -72,11 +77,11 @@ export function SectionCards() {
       icon: MessageEdit01Icon,
     },
     {
-      label: "Open Positions",
-      value: stats.totalCareers,
-      detail: "Career listings on website",
-      badge: "Hiring",
-      icon: Briefcase01Icon,
+      label: "Enquiries",
+      value: stats.totalEnquiries,
+      detail: `${stats.unreadEnquiries} unread`,
+      badge: stats.unreadEnquiries > 0 ? "New" : "All read",
+      icon: Mail01Icon,
     },
   ]
 

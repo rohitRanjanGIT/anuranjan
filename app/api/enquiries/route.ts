@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-// GET /api/testimonials — with optional pagination
+// GET /api/enquiries — with optional pagination
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const page = searchParams.get("page");
@@ -18,41 +18,48 @@ export async function GET(request: Request) {
       queryOptions.skip = (pageNum - 1) * limitNum;
       queryOptions.take = limitNum;
 
-      const [testimonials, total] = await Promise.all([
-        prisma.testimonial.findMany(queryOptions),
-        prisma.testimonial.count(),
+      const [enquiries, total] = await Promise.all([
+        prisma.enquiry.findMany(queryOptions),
+        prisma.enquiry.count(),
       ]);
 
       return NextResponse.json({
-        data: testimonials,
+        data: enquiries,
         meta: { page: pageNum, limit: limitNum, total, totalPages: Math.ceil(total / limitNum) },
       });
     }
 
-    const testimonials = await prisma.testimonial.findMany(queryOptions);
-    return NextResponse.json(testimonials);
+    const enquiries = await prisma.enquiry.findMany(queryOptions);
+    return NextResponse.json(enquiries);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch testimonials" },
+      { error: error instanceof Error ? error.message : "Failed to fetch enquiries" },
       { status: 500 }
     );
   }
 }
 
-// POST /api/testimonials
+// POST /api/enquiries
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, role, content, avatar, rating, source } = body;
+    const { name, email, phone, subject, message } = body;
 
-    const testimonial = await prisma.testimonial.create({
-      data: { name, role, content, avatar, rating, source },
+    if (!name || !email || !subject || !message) {
+      return NextResponse.json(
+        { error: "Name, email, subject, and message are required" },
+        { status: 400 }
+      );
+    }
+
+    const enquiry = await prisma.enquiry.create({
+      data: { name, email, phone: phone || null, subject, message },
     });
 
-    return NextResponse.json(testimonial, { status: 201 });
+    return NextResponse.json(enquiry, { status: 201 });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to create testimonial" },
+      { error: error instanceof Error ? error.message : "Failed to create enquiry" },
       { status: 500 }
     );
   }

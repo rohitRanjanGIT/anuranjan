@@ -96,6 +96,20 @@ model Career {
   @@map("careers")
 }
 
+// ─── Enquiries (contact form submissions) ────────────────
+model Enquiry {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("enquiries")
+}
+
 model admin {
   id          Int      @id @default(autoincrement())
   username    String   @unique
@@ -105,6 +119,18 @@ model admin {
   updatedAt   DateTime @updatedAt @map("updated_at")
   @@map("admin")
 }
+// ─── Client Logos (homepage marquee) ─────────────────────────
+model Logo {
+  id        Int      @id @default(autoincrement())
+  name      String   // company name
+  src       String   // logo image URL
+  href      String?  // optional link to company website
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("logos")
+}
+
 model siteconfig {
   id          Int      @id @default(autoincrement())
   createdAt   DateTime @default(now()) @map("created_at")

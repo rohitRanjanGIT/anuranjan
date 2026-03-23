@@ -14,6 +14,8 @@ export async function GET() {
       totalCareers,
       totalCategories,
       featuredProjects,
+      totalEnquiries,
+      unreadEnquiries,
     ] = await Promise.all([
       prisma.project.count(),
       prisma.project.count({ where: { status: "ONGOING" } }),
@@ -24,6 +26,8 @@ export async function GET() {
       prisma.career.count(),
       prisma.category.count(),
       prisma.project.count({ where: { homepagePortfolio: true } }),
+      prisma.enquiry.count(),
+      prisma.enquiry.count({ where: { read: false } }),
     ]);
 
     return NextResponse.json({
@@ -36,6 +40,8 @@ export async function GET() {
       totalCareers,
       totalCategories,
       featuredProjects,
+      totalEnquiries,
+      unreadEnquiries,
     });
   } catch (error) {
     return NextResponse.json(

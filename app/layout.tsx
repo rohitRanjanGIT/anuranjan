@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Manrope, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import FloatingSpeedDial from "./components/FloatingSpeedDial";
+import { SiteConfigProvider } from "@/components/siteconfig-context";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
@@ -31,7 +33,10 @@ export default function RootLayout({
       <body
         className={`${manrope.variable} antialiased`}
       >
-        {children}
+        <SiteConfigProvider>
+          {children}
+          <FloatingSpeedDial />
+        </SiteConfigProvider>
       </body>
     </html>
   );

@@ -2,13 +2,23 @@
 
 import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
-import { projects, siteConfig } from "@/lib/data/data";
+import { siteConfig } from "@/lib/data/data";
 import Link from "next/link";
 import { ParticleCard } from "./MagicBento";
 import { useRef, useState, useEffect, useCallback } from "react";
 
+interface FeaturedProject {
+    id: number
+    title: string
+    image: string
+    category: { name: string }
+}
+
 export default function FeaturedProjects() {
     const { portfolio } = siteConfig.homeStrings;
+
+    const [projects, setProjects] = useState<FeaturedProject[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const trackRef = useRef<HTMLDivElement>(null);
     const rafRef = useRef<number>(0);
@@ -16,8 +26,20 @@ export default function FeaturedProjects() {
     const pausedRef = useRef(false);
     const SPEED = 0.45; // px per frame
 
+    // Fetch featured projects
+    useEffect(() => {
+        fetch("/api/projects?homepagePortfolio=true")
+            .then((res) => res.json())
+            .then((data) => {
+                setProjects(Array.isArray(data) ? data : []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
+
     // Auto-scroll via rAF
     useEffect(() => {
+        if (projects.length === 0) return;
         const track = trackRef.current;
         if (!track) return;
 
@@ -33,11 +55,11 @@ export default function FeaturedProjects() {
 
         rafRef.current = requestAnimationFrame(tick);
         return () => cancelAnimationFrame(rafRef.current);
-    }, []);
+    }, [projects]);
 
     const nudge = useCallback((dir: 1 | -1) => {
         const track = trackRef.current;
-        if (!track) return;
+        if (!track || projects.length === 0) return;
         pausedRef.current = true;
 
         const cardWidth = track.scrollWidth / 2 / projects.length;
@@ -67,7 +89,7 @@ export default function FeaturedProjects() {
         };
 
         requestAnimationFrame(animate);
-    }, []);
+    }, [projects]);
 
     // Duplicate items for seamless loop
     const items = [...projects, ...projects];
@@ -93,6 +115,16 @@ export default function FeaturedProjects() {
             </div>
 
             {/* Carousel */}
+            {loading ? (
+                <div className="flex justify-center py-20">
+                    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                </div>
+            ) : projects.length === 0 ? (
+                <div className="text-center py-20 text-secondary/40">
+                    <span className="material-symbols-outlined text-4xl mb-2 block">construction</span>
+                    <p className="text-sm font-medium uppercase tracking-wide">No featured projects yet</p>
+                </div>
+            ) : (
             <div
                 className="relative"
                 onMouseEnter={() => { pausedRef.current = true; }}
@@ -151,7 +183,7 @@ export default function FeaturedProjects() {
                                     <div className="absolute inset-0 bg-gradient-to-t from-secondary via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
                                     <div className="absolute bottom-7 left-7 right-7 text-white z-10">
                                         <span className="text-[10px] uppercase font-bold tracking-[0.3em] text-primary mb-1.5 block">
-                                            {project.category}
+                                            {project.category.name}
                                         </span>
                                         <h5 className="text-xl font-bold tracking-tight leading-snug">
                                             {project.title}
@@ -163,6 +195,7 @@ export default function FeaturedProjects() {
                     </div>
                 </div>
             </div>
+            )}
 
             {/* Footer CTA */}
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">

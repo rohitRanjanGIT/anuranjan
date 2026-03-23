@@ -27,7 +27,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Edit02Icon, Delete02Icon, PlusSignIcon, Upload04Icon, Image01Icon, StarIcon, SearchingIcon } from "@hugeicons/core-free-icons"
+import { Edit02Icon, Delete02Icon, PlusSignIcon, Upload04Icon, Image01Icon, StarIcon, SearchingIcon, ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 
 interface Category {
   id: number
@@ -57,6 +57,11 @@ export default function ImagesPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const limit = 10
+
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [uploading, setUploading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -73,22 +78,36 @@ export default function ImagesPage() {
 
   const fetchData = async () => {
     setLoading(true)
-    
+
     const qs = new URLSearchParams()
     if (filterCategory !== "ALL") qs.set("categoryId", filterCategory)
     if (filterHero === "TRUE") qs.set("hero", "true")
+    qs.set("page", page.toString())
+    qs.set("limit", limit.toString())
 
     const [imgRes, catRes] = await Promise.all([
       fetch(`/api/images?${qs.toString()}`),
       fetch("/api/categories")
     ])
-    setImages(await imgRes.json())
+    const imgData = await imgRes.json()
+    if (imgData.meta) {
+      setImages(imgData.data)
+      setTotalPages(imgData.meta.totalPages || 1)
+    } else {
+      setImages(Array.isArray(imgData) ? imgData : [])
+      setTotalPages(1)
+    }
     setCategories(await catRes.json())
     setLoading(false)
   }
 
   useEffect(() => {
     fetchData()
+  }, [page, filterCategory, filterHero])
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(1)
   }, [filterCategory, filterHero])
 
   const processUpload = async (): Promise<{ secure_url: string; width: number; height: number } | null> => {
@@ -157,7 +176,8 @@ export default function ImagesPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this image? Projects using it will lose this image reference.")) return
     await fetch(`/api/images/${id}`, { method: "DELETE" })
-    fetchData()
+    if (images.length === 1 && page > 1) setPage(page - 1)
+    else fetchData()
   }
 
   const toggleHero = async (img: GalleryImage) => {
@@ -327,7 +347,7 @@ export default function ImagesPage() {
             </div>
           </div>
 
-          <div className="rounded-md border flex-1">
+          <div className="rounded-md border flex-1 flex flex-col">
             <Table>
               <TableHeader className="bg-muted">
                 <TableRow>
@@ -412,8 +432,35 @@ export default function ImagesPage() {
                 )}
               </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-end space-x-2 py-4 px-4 border-t mt-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                >
+                  <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4 mr-1" />
+                  Previous
+                </Button>
+                <div className="text-sm text-muted-foreground">
+                  Page {page} of {totalPages}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                >
+                  Next
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 ml-1" />
+                </Button>
+              </div>
+            )}
           </div>
-          
+
         </div>
       </SidebarInset>
 

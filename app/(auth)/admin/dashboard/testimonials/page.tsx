@@ -26,7 +26,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Edit02Icon, Delete02Icon, PlusSignIcon, StarIcon } from "@hugeicons/core-free-icons"
+import { Edit02Icon, Delete02Icon, PlusSignIcon, StarIcon, ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
 
 interface Testimonial {
   id: number
@@ -124,6 +124,11 @@ export default function TestimonialsPage() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Pagination
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const limit = 10
+
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [addForm, setAddForm] = useState(emptyTestimonial)
 
@@ -131,15 +136,21 @@ export default function TestimonialsPage() {
 
   const fetchTestimonials = async () => {
     setLoading(true)
-    const res = await fetch("/api/testimonials")
+    const res = await fetch(`/api/testimonials?page=${page}&limit=${limit}`)
     const data = await res.json()
-    setTestimonials(Array.isArray(data) ? data : [])
+    if (data.meta) {
+      setTestimonials(data.data)
+      setTotalPages(data.meta.totalPages || 1)
+    } else {
+      setTestimonials(Array.isArray(data) ? data : [])
+      setTotalPages(1)
+    }
     setLoading(false)
   }
 
   useEffect(() => {
     fetchTestimonials()
-  }, [])
+  }, [page])
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -168,7 +179,8 @@ export default function TestimonialsPage() {
   const handleDelete = async (id: number) => {
     if (!confirm("Are you sure you want to delete this testimonial?")) return
     await fetch(`/api/testimonials/${id}`, { method: "DELETE" })
-    fetchTestimonials()
+    if (testimonials.length === 1 && page > 1) setPage(page - 1)
+    else fetchTestimonials()
   }
 
   return (
@@ -214,7 +226,7 @@ export default function TestimonialsPage() {
             </Dialog>
           </div>
 
-          <div className="rounded-md border">
+          <div className="rounded-md border flex flex-col">
             <Table>
               <TableHeader className="bg-muted">
                 <TableRow>
@@ -268,6 +280,33 @@ export default function TestimonialsPage() {
                 )}
               </TableBody>
             </Table>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-end space-x-2 py-4 px-4 border-t mt-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1 || loading}
+                >
+                  <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4 mr-1" />
+                  Previous
+                </Button>
+                <div className="text-sm text-muted-foreground">
+                  Page {page} of {totalPages}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages || loading}
+                >
+                  Next
+                  <HugeiconsIcon icon={ArrowRight01Icon} className="size-4 ml-1" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <Dialog open={!!editItem} onOpenChange={(open) => !open && setEditItem(null)}>

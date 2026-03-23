@@ -20,12 +20,13 @@ import {
   Folder01Icon,
   Layers01Icon,
   Settings05Icon,
-  HelpCircleIcon,
   Image01Icon,
   UserGroupIcon,
   MessageEdit01Icon,
   Briefcase01Icon,
   Home01Icon,
+  CorporateIcon,
+  Mail01Icon,
 } from "@hugeicons/core-free-icons"
 
 const data = {
@@ -71,10 +72,38 @@ const data = {
       ),
     },
     {
+      title: "Client Logos",
+      url: "/admin/dashboard/logos",
+      icon: (
+        <HugeiconsIcon icon={CorporateIcon} strokeWidth={2} />
+      ),
+    },
+    {
+      title: "Enquiries",
+      url: "/admin/dashboard/enquiries",
+      icon: (
+        <HugeiconsIcon icon={Mail01Icon} strokeWidth={2} />
+      ),
+    },
+    {
       title: "Careers",
       url: "/admin/dashboard/careers",
       icon: (
         <HugeiconsIcon icon={Briefcase01Icon} strokeWidth={2} />
+      ),
+    },
+    {
+      title: "Admins",
+      url: "/admin/dashboard/admin",
+      icon: (
+        <HugeiconsIcon icon={UserGroupIcon} strokeWidth={2} />
+      ),
+    },
+    {
+      title: "Site Config",
+      url: "/admin/dashboard/siteconfig",
+      icon: (
+        <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
       ),
     },
   ],
@@ -84,20 +113,6 @@ const data = {
       url: "/",
       icon: (
         <HugeiconsIcon icon={Home01Icon} strokeWidth={2} />
-      ),
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: (
-        <HugeiconsIcon icon={Settings05Icon} strokeWidth={2} />
-      ),
-    },
-    {
-      title: "Help",
-      url: "#",
-      icon: (
-        <HugeiconsIcon icon={HelpCircleIcon} strokeWidth={2} />
       ),
     },
   ],

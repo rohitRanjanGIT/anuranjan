@@ -1,12 +1,34 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Hero from "../components/Hero";
-import { careers, siteConfig } from "@/lib/data/data";
+import { siteConfig } from "@/lib/data/data";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, slideInLeft } from "@/lib/animations";
 
+interface Career {
+    id: number
+    title: string
+    department: string
+    location: string
+    type: string
+    experience: string
+}
+
 export default function CareersClient() {
     const { hero, intro, culture } = siteConfig.careersStrings;
+    const [careers, setCareers] = useState<Career[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("/api/careers")
+            .then((r) => r.json())
+            .then((data) => {
+                setCareers(Array.isArray(data) ? data : []);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, []);
 
     return (
         <>
@@ -31,6 +53,16 @@ export default function CareersClient() {
                         <p className="text-secondary/60 text-lg font-light">{intro.description}</p>
                     </motion.div>
 
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        </div>
+                    ) : careers.length === 0 ? (
+                        <div className="text-center py-20 text-secondary/40 space-y-3">
+                            <span className="material-symbols-outlined text-4xl block">work_off</span>
+                            <p className="text-sm font-medium uppercase tracking-wide">No open positions at the moment</p>
+                        </div>
+                    ) : (
                     <motion.div
                         variants={staggerContainer}
                         initial="hidden"
@@ -72,6 +104,7 @@ export default function CareersClient() {
                             </motion.div>
                         ))}
                     </motion.div>
+                    )}
                 </div>
             </section>
 

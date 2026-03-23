@@ -7,6 +7,7 @@ import CompanyStory from "./components/CompanyStory";
 import MissionVision from "./components/MissionVision";
 import TeamGrid from "./components/TeamGrid";
 import JourneyTimeline from "./components/JourneyTimeline";
+import ContactForm from "./components/ContactForm";
 
 export const metadata: Metadata = {
     title: "About Us | Anuranjan Infratech",
@@ -31,6 +32,7 @@ export default function AboutPage() {
             <MissionVision />
             <TeamGrid />
             <JourneyTimeline />
+            <ContactForm />
 
             <Footer />
         </main>
