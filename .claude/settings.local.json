@@ -5,7 +5,9 @@
       "Bash(claude plugin *)",
       "Bash(npx next *)",
       "Bash(npx prisma *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit -m 'feat: add project detail pages with dedicated content field *)",
+      "Bash(git push *)"
     ]
   }
 }

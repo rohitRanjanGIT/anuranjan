@@ -17,7 +17,10 @@ export const metadata: Metadata = {
   description: "Excellence in infrastructure and construction since 1998. Building tomorrow's landmarks with precision and integrity.",
   icons: {
     icon: "/favicon.ico",
-  }
+  },
+  verification: {
+    google: "TKSR4P0Rq8mQlmcxpRxbwRW_YFLLCrT4-XomTeOZKgU",
+  },
 };
 
 export default function RootLayout({
