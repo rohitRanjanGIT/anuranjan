@@ -59,12 +59,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, description, categoryId, type, image, images, location, status, year, homepagePortfolio } = body;
+    const { title, description, content, categoryId, type, image, images, location, status, year, homepagePortfolio } = body;
 
     const project = await prisma.project.create({
       data: {
         title,
         description,
+        content,
         categoryId: Number(categoryId),
         type,
         image,

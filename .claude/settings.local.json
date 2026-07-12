@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(claude plugin *)",
+      "Bash(npx next *)",
+      "Bash(npx prisma *)",
+      "Bash(git add *)"
     ]
   }
 }

@@ -44,7 +44,8 @@ model Image {
 model Project {
   id                Int           @id @default(autoincrement())
   title             String
-  description       String?
+  description       String? // short summary shown in listings & cards
+  content           String? // long-form, in-depth content for the detail page
   category          Category      @relation(fields: [categoryId], references: [id])
   categoryId        Int           @map("category_id")
   type              String

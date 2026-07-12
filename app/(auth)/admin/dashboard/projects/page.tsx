@@ -18,6 +18,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog"
@@ -28,7 +29,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { HugeiconsIcon } from "@hugeicons/react"
-import { Edit02Icon, Delete02Icon, PlusSignIcon, Upload04Icon, CheckmarkCircle01Icon, Loading03Icon, ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons"
+import { Edit02Icon, Delete02Icon, PlusSignIcon, Upload04Icon, CheckmarkCircle01Icon, Loading03Icon, ArrowLeft01Icon, ArrowRight01Icon, LinkSquare02Icon } from "@hugeicons/core-free-icons"
+import { projectHref } from "@/lib/utils"
 
 interface Category {
   id: number
@@ -45,6 +47,7 @@ interface Project {
   id: number
   title: string
   description: string | null
+  content: string | null
   type: string
   status: string
   year: string | null
@@ -59,6 +62,7 @@ interface Project {
 const emptyForm = {
   title: "",
   description: "",
+  content: "",
   categoryId: "",
   type: "",
   year: "",
@@ -218,6 +222,7 @@ export default function ProjectsPage() {
       const payload = {
         title: formState.title,
         description: formState.description,
+        content: formState.content,
         categoryId: formState.categoryId,
         type: formState.type,
         year: formState.year,
@@ -287,6 +292,7 @@ export default function ProjectsPage() {
     setFormState({
       title: p.title,
       description: p.description || "",
+      content: p.content || "",
       categoryId: p.categoryId.toString(),
       type: p.type,
       year: p.year || "",
@@ -351,197 +357,256 @@ export default function ProjectsPage() {
                     <HugeiconsIcon icon={PlusSignIcon} />
                     Create Project
                   </Button>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto w-full">
-                  <DialogHeader>
-                    <DialogTitle>{editItem ? "Edit Project" : "Create New Project"}</DialogTitle>
+                <DialogContent className="flex flex-col gap-0 p-0 overflow-hidden w-[96vw] sm:max-w-5xl xl:max-w-6xl max-h-[92vh]">
+                  <DialogHeader className="px-6 py-5 border-b shrink-0 text-left">
+                    <DialogTitle className="text-lg">{editItem ? "Edit Project" : "Create New Project"}</DialogTitle>
+                    <DialogDescription>
+                      {editItem
+                        ? "Update the media, details and visibility for this portfolio item."
+                        : "Add a new portfolio item. Fields marked with * are required."}
+                    </DialogDescription>
                   </DialogHeader>
-                  <form onSubmit={handleSave} className="space-y-6">
-                    {/* Image Upload */}
-                    <div className="space-y-2">
-                      <Label>Main Thumbnail Image {editItem && "(Leave empty to keep current)"}</Label>
-                      {editItem && !formState.file && (
-                        <img src={editItem.image} alt="Current thumbnail" className="h-20 w-32 object-cover rounded-md border mb-2" />
-                      )}
-                      <div className="flex items-center gap-4">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => fileInputRef.current?.click()}
-                          className="w-full h-16 border-dashed"
-                        >
-                          <div className="flex flex-col items-center gap-1 text-muted-foreground text-sm">
-                            <HugeiconsIcon icon={Upload04Icon} className="size-5" />
-                            <span>{formState.file ? formState.file.name : (editItem ? "Click to replace thumbnail" : "Click to select a file")}</span>
-                          </div>
-                        </Button>
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => setFormState(p => ({ ...p, file: e.target.files?.[0] || null }))}
-                        />
-                      </div>
-                    </div>
 
-                    {/* Gallery Images Selection */}
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label>Detail Gallery Images</Label>
-                        <div>
-                          <input
-                            ref={multipleFileInputRef}
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            className="hidden"
-                            onChange={handleInlineUpload}
-                            disabled={!formState.categoryId || inlineUploading}
-                          />
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={!formState.categoryId || inlineUploading}
-                            onClick={() => multipleFileInputRef.current?.click()}
-                            title={!formState.categoryId ? "Select a category first to upload images" : "Upload new images"}
-                          >
-                            <HugeiconsIcon icon={Upload04Icon} className="size-4 mr-1" />
-                            {inlineUploading ? "Uploading..." : "Upload New Images"}
-                          </Button>
-                        </div>
-                      </div>
-                      {!formState.categoryId && (
-                        <p className="text-xs text-orange-500 mb-2">You must select a Category above before uploading new gallery images.</p>
-                      )}
-                      <div className="h-40 overflow-y-auto border rounded-md p-2 grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2 bg-muted/20">
-                        {galleryImages.map((img) => {
-                          const isSelected = formState.selectedImageIds.includes(img.id)
-                          return (
-                            <div 
-                              key={img.id} 
-                              className={`relative aspect-square cursor-pointer rounded-md overflow-hidden border-2 transition-all ${isSelected ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'}`}
-                              onClick={() => {
-                                setFormState(prev => ({
-                                  ...prev,
-                                  selectedImageIds: isSelected 
-                                    ? prev.selectedImageIds.filter(id => id !== img.id)
-                                    : [...prev.selectedImageIds, img.id]
-                                }))
-                              }}
+                  <form onSubmit={handleSave} className="flex flex-col min-h-0 flex-1">
+                    <div className="flex-1 overflow-y-auto px-6 py-6">
+                      <div className="grid gap-8 lg:gap-10 lg:grid-cols-2">
+
+                        {/* ─── LEFT: Media ───────────────────────────── */}
+                        <div className="space-y-6">
+                          <div className="space-y-1">
+                            <h3 className="text-sm font-semibold">Media</h3>
+                            <p className="text-xs text-muted-foreground">
+                              The thumbnail appears in listings; the gallery images appear on the project detail page.
+                            </p>
+                          </div>
+
+                          {/* Thumbnail */}
+                          <div className="space-y-2">
+                            <Label>
+                              Main Thumbnail Image{!editItem && " *"}
+                              {editItem && <span className="ml-1 font-normal text-muted-foreground">(leave empty to keep current)</span>}
+                            </Label>
+                            {editItem && !formState.file && (
+                              <img src={editItem.image} alt="Current thumbnail" className="h-28 w-full max-w-xs object-cover rounded-md border" />
+                            )}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => fileInputRef.current?.click()}
+                              className="w-full h-20 border-dashed"
                             >
-                              <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
-                              {isSelected && (
-                                <div className="absolute inset-0 bg-primary/20 flex items-center justify-center backdrop-blur-[1px]">
-                                  <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-6 text-primary" />
+                              <div className="flex flex-col items-center gap-1 text-muted-foreground text-sm">
+                                <HugeiconsIcon icon={Upload04Icon} className="size-5" />
+                                <span>{formState.file ? formState.file.name : (editItem ? "Click to replace thumbnail" : "Click to select a file")}</span>
+                              </div>
+                            </Button>
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => setFormState(p => ({ ...p, file: e.target.files?.[0] || null }))}
+                            />
+                          </div>
+
+                          {/* Gallery */}
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between gap-2">
+                              <Label>Detail Gallery Images</Label>
+                              <div>
+                                <input
+                                  ref={multipleFileInputRef}
+                                  type="file"
+                                  accept="image/*"
+                                  multiple
+                                  className="hidden"
+                                  onChange={handleInlineUpload}
+                                  disabled={!formState.categoryId || inlineUploading}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="secondary"
+                                  size="sm"
+                                  disabled={!formState.categoryId || inlineUploading}
+                                  onClick={() => multipleFileInputRef.current?.click()}
+                                  title={!formState.categoryId ? "Select a category first to upload images" : "Upload new images"}
+                                >
+                                  <HugeiconsIcon icon={Upload04Icon} className="size-4 mr-1" />
+                                  {inlineUploading ? "Uploading..." : "Upload New Images"}
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Click an image to attach or detach it from this project.
+                            </p>
+                            {!formState.categoryId && (
+                              <p className="text-xs text-orange-500">Select a Category first to upload new gallery images.</p>
+                            )}
+                            <div className="h-64 overflow-y-auto border rounded-md p-2 grid grid-cols-4 sm:grid-cols-5 gap-2 bg-muted/20">
+                              {galleryImages.map((img) => {
+                                const isSelected = formState.selectedImageIds.includes(img.id)
+                                return (
+                                  <div
+                                    key={img.id}
+                                    className={`relative aspect-square cursor-pointer rounded-md overflow-hidden border-2 transition-all ${isSelected ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-primary/50'}`}
+                                    onClick={() => {
+                                      setFormState(prev => ({
+                                        ...prev,
+                                        selectedImageIds: isSelected
+                                          ? prev.selectedImageIds.filter(id => id !== img.id)
+                                          : [...prev.selectedImageIds, img.id]
+                                      }))
+                                    }}
+                                  >
+                                    <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+                                    {isSelected && (
+                                      <div className="absolute inset-0 bg-primary/20 flex items-center justify-center backdrop-blur-[1px]">
+                                        <HugeiconsIcon icon={CheckmarkCircle01Icon} className="size-6 text-primary" />
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              })}
+                              {galleryImages.length === 0 && (
+                                <div className="col-span-full flex items-center justify-center p-4 min-h-24 text-sm text-muted-foreground border-dashed border-2 rounded-md">
+                                  No gallery images available yet. Upload new ones here to attach to this project.
                                 </div>
                               )}
                             </div>
-                          )
-                        })}
-                        {galleryImages.length === 0 && (
-                          <div className="col-span-full flex items-center justify-center p-4 min-h-24 text-sm text-muted-foreground border-dashed border-2 rounded-md">
-                            No gallery images available yet. Upload new ones here to attach to this project.
+                            <p className="text-[0.8rem] text-muted-foreground">
+                              Selected: {formState.selectedImageIds.length} image(s)
+                            </p>
                           </div>
-                        )}
+                        </div>
+
+                        {/* ─── RIGHT: Project information ─────────────── */}
+                        <div className="space-y-5">
+                          <div className="space-y-1">
+                            <h3 className="text-sm font-semibold">Project Information</h3>
+                            <p className="text-xs text-muted-foreground">
+                              Basic details and how this project appears on the website.
+                            </p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="title">Project Title *</Label>
+                            <Input
+                              id="title"
+                              value={formState.title}
+                              onChange={(e) => setFormState(p => ({ ...p, title: e.target.value }))}
+                              placeholder="e.g. Modern Villa"
+                              required
+                            />
+                          </div>
+
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Category *</Label>
+                              <Select
+                                value={formState.categoryId}
+                                onValueChange={(val) => setFormState(p => ({ ...p, categoryId: val }))}
+                                required
+                              >
+                                <SelectTrigger className="w-full"><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                <SelectContent>
+                                  {categories.map((c) => (
+                                    <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Status</Label>
+                              <Select
+                                value={formState.status}
+                                onValueChange={(val) => setFormState(p => ({ ...p, status: val }))}
+                              >
+                                <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="ONGOING">Ongoing</SelectItem>
+                                  <SelectItem value="COMPLETED">Completed</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+                          </div>
+
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="type">Type *</Label>
+                              <Input
+                                id="type"
+                                value={formState.type}
+                                onChange={(e) => setFormState(p => ({ ...p, type: e.target.value }))}
+                                placeholder="e.g. Residential Complex"
+                                required
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="year">Year</Label>
+                              <Input
+                                id="year"
+                                value={formState.year}
+                                onChange={(e) => setFormState(p => ({ ...p, year: e.target.value }))}
+                                placeholder="e.g. 2024"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="location">Location</Label>
+                            <Input
+                              id="location"
+                              value={formState.location}
+                              onChange={(e) => setFormState(p => ({ ...p, location: e.target.value }))}
+                              placeholder="e.g. Mumbai, Maharashtra"
+                            />
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="description">Short Description</Label>
+                            <Textarea
+                              id="description"
+                              value={formState.description}
+                              onChange={(e) => setFormState(p => ({ ...p, description: e.target.value }))}
+                              rows={3}
+                              placeholder="A brief one or two line summary. Shown on cards, listings and as the overview intro."
+                            />
+                            <p className="text-[0.8rem] text-muted-foreground">
+                              General summary used in listings, cards and page metadata.
+                            </p>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="content">Detail Page Content</Label>
+                            <Textarea
+                              id="content"
+                              value={formState.content}
+                              onChange={(e) => setFormState(p => ({ ...p, content: e.target.value }))}
+                              rows={8}
+                              placeholder="In-depth write-up shown on the dedicated project page — scope, engineering approach, materials, challenges, outcomes, etc. Line breaks are preserved."
+                            />
+                            <p className="text-[0.8rem] text-muted-foreground">
+                              Long-form content dedicated to the project detail page. Leave the short description for summaries.
+                            </p>
+                          </div>
+
+                          <div className="flex items-center justify-between rounded-lg border p-3 shadow-xs">
+                            <div className="space-y-0.5 pr-4">
+                              <Label>Feature on Homepage</Label>
+                              <p className="text-[0.8rem] text-muted-foreground">
+                                Display this project in the homepage primary portfolio grid.
+                              </p>
+                            </div>
+                            <Switch
+                              checked={formState.homepagePortfolio}
+                              onCheckedChange={(checked) => setFormState(p => ({ ...p, homepagePortfolio: checked }))}
+                            />
+                          </div>
+                        </div>
                       </div>
-                      <p className="text-[0.8rem] text-muted-foreground">
-                        Selected: {formState.selectedImageIds.length} image(s)
-                      </p>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="title">Project Title</Label>
-                        <Input 
-                          id="title"
-                          value={formState.title} 
-                          onChange={(e) => setFormState(p => ({ ...p, title: e.target.value }))}
-                          placeholder="e.g. Modern Villa"
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Category</Label>
-                        <Select 
-                          value={formState.categoryId} 
-                          onValueChange={(val) => setFormState(p => ({ ...p, categoryId: val }))}
-                          required
-                        >
-                          <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
-                          <SelectContent>
-                            {categories.map((c) => (
-                              <SelectItem key={c.id} value={c.id.toString()}>{c.name}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="type">Type (Optional categorization)</Label>
-                        <Input 
-                          id="type"
-                          value={formState.type} 
-                          onChange={(e) => setFormState(p => ({ ...p, type: e.target.value }))}
-                          required
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="year">Year</Label>
-                        <Input 
-                          id="year"
-                          value={formState.year} 
-                          onChange={(e) => setFormState(p => ({ ...p, year: e.target.value }))}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="location">Location</Label>
-                        <Input 
-                          id="location"
-                          value={formState.location} 
-                          onChange={(e) => setFormState(p => ({ ...p, location: e.target.value }))}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Status</Label>
-                        <Select 
-                          value={formState.status} 
-                          onValueChange={(val) => setFormState(p => ({ ...p, status: val }))}
-                        >
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ONGOING">Ongoing</SelectItem>
-                            <SelectItem value="COMPLETED">Completed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="description">Description</Label>
-                      <Textarea 
-                        id="description"
-                        value={formState.description} 
-                        onChange={(e) => setFormState(p => ({ ...p, description: e.target.value }))}
-                        rows={4}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between rounded-lg border p-3 shadow-xs">
-                      <div className="space-y-0.5">
-                        <Label>Feature on Homepage</Label>
-                        <p className="text-[0.8rem] text-muted-foreground">
-                          Display this project in the homepage primary portfolio grid.
-                        </p>
-                      </div>
-                      <Switch
-                        checked={formState.homepagePortfolio}
-                        onCheckedChange={(checked) => setFormState(p => ({ ...p, homepagePortfolio: checked }))}
-                      />
-                    </div>
-
-                    <DialogFooter>
+                    <DialogFooter className="px-6 py-4 border-t bg-muted/30 shrink-0">
                       <Button type="button" variant="outline" onClick={() => setIsAddOpen(false)} disabled={uploading}>
                         Cancel
                       </Button>
@@ -617,9 +682,19 @@ export default function ProjectsPage() {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
+                          <Button
+                            asChild
+                            variant="ghost"
+                            size="icon"
+                            title="View live page"
+                          >
+                            <a href={projectHref(p)} target="_blank" rel="noopener noreferrer">
+                              <HugeiconsIcon icon={LinkSquare02Icon} className="size-4" />
+                            </a>
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() => openEdit(p)}
                           >
                             <HugeiconsIcon icon={Edit02Icon} className="size-4" />

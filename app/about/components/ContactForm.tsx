@@ -46,7 +46,7 @@ export default function ContactForm() {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-slate-50 overflow-hidden">
+        <section id="contact" className="scroll-mt-24 py-24 md:py-32 bg-slate-50 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
                 <motion.div
                     variants={fadeUp}

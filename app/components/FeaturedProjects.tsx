@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "@/lib/animations";
 import { siteConfig } from "@/lib/data/data";
 import Link from "next/link";
-import { ParticleCard } from "./MagicBento";
+import { projectHref } from "@/lib/utils";
 import { useRef, useState, useEffect, useCallback } from "react";
 
 interface FeaturedProject {
@@ -24,7 +24,7 @@ export default function FeaturedProjects() {
     const rafRef = useRef<number>(0);
     const offsetRef = useRef(0);
     const pausedRef = useRef(false);
-    const SPEED = 0.45; // px per frame
+    const SPEED = 0.2; // px per frame
 
     // Fetch featured projects
     useEffect(() => {
@@ -168,12 +168,9 @@ export default function FeaturedProjects() {
                                 key={`${project.id}-${idx}`}
                                 className="w-[280px] md:w-[340px] lg:w-[380px] shrink-0"
                             >
-                                <ParticleCard
-                                    className="relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-sm group hover:shadow-xl transition-all duration-500"
-                                    glowColor="211, 49, 49"
-                                    particleCount={20}
-                                    enableTilt={true}
-                                    clickEffect={true}
+                                <Link
+                                    href={projectHref(project)}
+                                    className="block relative aspect-[4/5] overflow-hidden rounded-[2rem] shadow-sm group hover:shadow-xl transition-all duration-500"
                                 >
                                     <img
                                         alt={project.title}
@@ -189,7 +186,7 @@ export default function FeaturedProjects() {
                                             {project.title}
                                         </h5>
                                     </div>
-                                </ParticleCard>
+                                </Link>
                             </div>
                         ))}
                     </div>

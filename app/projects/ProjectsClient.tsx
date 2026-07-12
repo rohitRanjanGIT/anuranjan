@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { siteConfig } from "@/lib/data/data";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp, staggerContainer, scaleUp } from "@/lib/animations";
+import { projectHref } from "@/lib/utils";
 import Hero from "../components/Hero";
 
 // ─── Types & Config ────────────────────────────────────────────────────────────
@@ -29,7 +32,9 @@ interface ProjectType {
 }
 
 function ProjectCard({ project }: { project: ProjectType }) {
+    const router = useRouter();
     const isOngoing = project.status === "ONGOING";
+    const href = projectHref(project);
 
     // Grab up to 4 images for the gallery, falling back to the main image
     const galleryImages = project.images && project.images.length > 0
@@ -44,8 +49,21 @@ function ProjectCard({ project }: { project: ProjectType }) {
             initial="hidden"
             animate="visible"
             exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-            className="group cursor-pointer bg-slate-50 relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500"
+            onClick={() => router.push(href)}
+            onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    router.push(href);
+                }
+            }}
+            role="link"
+            tabIndex={0}
+            className="group cursor-pointer bg-slate-50 relative rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
+            {/* Crawlable / screen-reader link (visually hidden so it doesn't block the hover-gallery) */}
+            <Link href={href} className="sr-only" tabIndex={-1}>
+                View {project.title}
+            </Link>
             <div className="relative overflow-hidden aspect-[4/3] rounded-t-3xl border-b-0">
 
                 {/* 

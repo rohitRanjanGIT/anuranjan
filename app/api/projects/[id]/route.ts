@@ -28,13 +28,14 @@ export async function PUT(request: Request, { params }: Params) {
   const { id } = await params;
   try {
     const body = await request.json();
-    const { title, description, categoryId, type, image, images, location, status, year, homepagePortfolio } = body;
+    const { title, description, content, categoryId, type, image, images, location, status, year, homepagePortfolio } = body;
 
     const project = await prisma.project.update({
       where: { id: Number(id) },
       data: {
         ...(title !== undefined && { title }),
         ...(description !== undefined && { description }),
+        ...(content !== undefined && { content }),
         ...(categoryId !== undefined && { categoryId: Number(categoryId) }),
         ...(type !== undefined && { type }),
         ...(image !== undefined && { image }),
